@@ -1,0 +1,93 @@
+% \VignetteIndexEntry{Knee Data - Random Effects Logit Models}
+% \VignetteDepends{gee}
+
+\documentclass[a4paper]{article}
+
+\title{Knee Data - Random Effects Logit Models}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+
+First the knee dataset is loaded:
+
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(knee)
+@
+
+
+For the following models the data set is transformed into long format what can be done by the function "reshape". 
+
+In addition the dichotomized response variables "RD" is created. The groups are constructed by
+pain level up to level 2 und pain level higher than level 2.
+
+<<eval=FALSE>>=
+knee <- reshape(knee, direction="long", varying=list(5:8), v.names="R",timevar="Time")
+
+knee$RD <- rep(0, length(knee$R))
+knee$RD[knee$R>2] <- 1
+@
+
+For better interpretability the variable "Age" is centered around 30 , the variable "Age2" is created as quadratic effect of "Age".
+
+<<eval=FALSE>>=
+knee$Age <- knee$Age - 30
+knee$Age2 <- knee$Age^2  
+@
+
+Since only the measurements 2, 3 and 4 are used for the models, measurement 1 can be eliminated.
+
+<<eval=FALSE>>=
+knee <- knee[knee$Time!=1,]
+@
+
+The first model will be fitted by Gauss--Hermite--Quadrature with 20 quadrature points by using function "glmmML" from library "glmmML".
+
+<<eval=FALSE>>=
+library(glmmML)
+@
+
+Now the random intercept model with Gauss--Hermite--Quadrature is fitted, the option "method" has to be set on "ghq", the number of quadrature points is set by "n.points".
+
+<<eval=FALSE>>=
+kneeGHQ <- glmmML(RD ~ as.factor(Th) + as.factor(Sex) + Age + Age2, data=knee, 
+family=binomial(), method="ghq", n.points=20, cluster=id)
+summary(kneeGHQ)
+@
+
+The random intercept model with Penalized Quasi--Likelihood is fitted by use of "glmmPQL" from the library "MASS". 
+
+<<eval=FALSE>>= 
+kneePQL <- glmmPQL(RD ~ as.factor(Th) + as.factor(Sex) + Age + Age2, data=knee, 
+random = ~ 1|id, family=binomial())
+summary(kneePQL)
+@
+
+The library "gee" is needed for fitting of the marginal model.
+
+<<eval=FALSE>>=
+library(gee)
+@
+
+For the marginal model the data set has to be arranged according to the variable "id" so that 
+measurements from the same individual are arranged one after the other. 
+
+<<eval=FALSE>>=
+knee <- knee[order(knee$id),]
+kneeGEE <- gee(RD ~ as.factor(Th) + as.factor(Sex) + Age + Age2, data=knee, 
+family=binomial(), id=id, corstr="exchangeable")
+summary(kneeGEE)
+@
+
+<<echo=FALSE,eval=FALSE>>=
+detach(package:gee)
+@
+
+\end{document}

@@ -1,0 +1,234 @@
+% \VignetteIndexEntry{Regularization and Variable Selection for Parametric Models (1)}
+% \VignetteDepends{lqa, lpSolve, mboost, GAMBoost, glmnet}
+
+\documentclass[a4paper]{article}
+
+\title{Regularization and Variable Selection for Parametric Models (1)}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=60)
+@
+
+<<eval=FALSE>>=
+library(lqa)
+library(lpSolve)
+library(mboost)
+library(GAMBoost)
+library(glmnet)
+#library(penalized)
+source("gdscode.txt")
+source("glmOSCAR_101028.r")
+load("heart.data.RData")
+@
+
+<<eval=FALSE>>=
+X<-heart.data$x
+X.std<-scale(X,center=TRUE,scale=TRUE)
+y<-heart.data$y
+p<-ncol(X)
+n<-length(y)
+family <- binomial()
+n.fold<-10
+
+
+ylab.text<-""
+xlab.text<-""
+Width = 6 
+Height = 6 
+oma.vec<-c(1,1,1,3) 
+size.axis=1.4 
+size.lab=1.4 
+size.main=1.4 
+size.right=1.2 
+size.width=2.0
+colour=1
+@
+
+
+
+
+Ridge
+
+COEF BUILD-UPS
+
+<<eval=FALSE>>=
+main.text<-"Ridge"
+penalty.family<-ridge
+
+Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family, add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,show.standardized=TRUE,gamma=0.01)
+set.seed(123)
+cv.result<-cv.lqa(y, X, intercept = TRUE, lambda.candidates= list(exp(seq(-10, 6, length = 60))), family=family, penalty.family=penalty.family, standardize = TRUE,  n.fold=n.fold, loss.func = "dev.loss", control = lqa.control(),gamma=0.01)
+
+@
+
+<<fig=TRUE,eval=FALSE>>=
+
+par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
+matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,main=main.text,lwd=size.width, col=colour)
+abline(v=sum(abs(cv.result$beta.opt[-1]%*%diag(c(sd(X)))*sqrt(n)))/sum(abs(Plot.mat$beta.mat[1, ])))
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+
+@
+
+
+LASSO
+
+
+
+COEF BUILD-UPS
+<<eval=FALSE>>=
+main.text<-"Lasso"
+penalty.family<-lasso
+
+Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family,add.MLE = TRUE, ret.true=TRUE,really.plot = FALSE,show.standardized=TRUE,gamma=0.5)
+set.seed(123)
+cv.result<-cv.lqa(y, X, intercept = TRUE, lambda.candidates= list(exp(seq(-10, 6, length = 60))), family=family, penalty.family=penalty.family, standardize = TRUE,  n.fold=n.fold, loss.func = "dev.loss", control = lqa.control(),gamma=0.5)
+@
+
+
+<<fig=TRUE,eval=FALSE>>=
+
+par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.lab,cex.main=size.main)
+matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,main=main.text,lwd=size.width, col=colour)
+abline(v=sum(abs(cv.result$beta.opt[-1]%*%diag(c(sd(X)))*sqrt(n)))/sum(abs(Plot.mat$beta.mat[1, ])))
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+
+@
+ADAPTIVE LASSO
+
+<<eval=FALSE>>=
+#Tuning parameter
+g<-1
+### Weights
+
+mle.std<-glm(y~X.std,family=binomial(),control=glm.control(maxit=1000))$coef[-1]
+w<-1/(abs(mle.std)^g)
+
+### COEF BUILD-UPS
+
+main.text<-"Adaptive Lasso"
+penalty.family<-adaptive.lasso
+
+
+Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family, add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,show.standardized=TRUE,weigths=w)
+set.seed(123)
+cv.result<-cv.lqa(y, X, intercept = TRUE, lambda.candidates= list(exp(seq(-10, 6, length = 60))), family=family, penalty.family=penalty.family, standardize = TRUE,  n.fold=n.fold, loss.func = "dev.loss", control = lqa.control())
+@
+
+<<fig=TRUE,eval=FALSE>>=
+
+par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.lab,cex.main=size.main)
+matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,main=main.text,lwd=size.width, col=colour)
+abline(v=sum(abs(cv.result$beta.opt[-1]%*%diag(c(sd(X)))*sqrt(n)))/sum(abs(Plot.mat$beta.mat[1, ])))
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+
+@
+glmnet elastic net  with CV    lambda, alpha
+
+<<eval=FALSE>>=
+folds<-rep(0,n)
+set.seed(123)
+cv.folds <- split(sample(seq(n)), rep(1:n.fold,length = n))
+for(i in 1:n.fold)
+{
+folds[c(cv.folds[[i]])]<-i
+}
+
+opt.min<-Inf
+alpha<-seq(0.01,0.99,length=99)
+for( i in 1:length(alpha))
+{
+opt<-cv.glmnet(X.std, y,family="binomial", alpha = alpha[i], nlambda = 100,foldid=folds)
+#cat(min(opt$cvm),"\n")
+if(min(opt$cvm)<opt.min)
+{
+lambda.opt<-opt$lambda.min
+alpha.opt<-alpha[i]
+opt.min<-min(opt$cvm)
+}
+}
+Path<-glmnet(X.std, y,family="binomial", alpha = alpha.opt, nlambda = 100)
+beta.opt<-glmnet(X.std, y,family="binomial", alpha = alpha.opt, lambda = lambda.opt)
+@
+
+
+<<fig=TRUE,eval=FALSE>>=
+
+par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
+matplot(colSums(abs(Path$beta))/max(colSums(abs(Path$beta))),t(Path$beta)*sqrt(n),type="l",ylab=ylab.text,xlab=xlab.text,main="Elastic Net (glmnet)",lwd=size.width)
+abline(v=sum(abs(beta.opt$beta))/max(colSums(abs(Path$beta))))
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+
+@
+
+<<eval=FALSE>>=
+opt.min<-Inf
+
+
+##### glmnet for fixed choice
+alpha<-0.5
+opt<-cv.glmnet(X.std, y,family="binomial", alpha = alpha, nlambda = 100,foldid=folds)
+Path<-glmnet(X.std, y,family="binomial", alpha = alpha, nlambda = 100)
+beta.opt<-Path$beta[,which.min(opt$cvm)]#glmnet(X.std, y,family="binomial", alpha = alpha, lambda = opt$lambda)
+@
+
+<<fig=TRUE,eval=FALSE>>=
+
+par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
+matplot(colSums(abs(Path$beta))/max(colSums(abs(Path$beta))),t(Path$beta)*sqrt(n),type="l",ylab=ylab.text,xlab=xlab.text,main="Elastic Net (glmnet, a=0.5)",lwd=size.width, col=1)
+abline(v=sum(abs(beta.opt))/max(colSums(abs(Path$beta))))
+axis(4, at = Path$beta[,ncol(Path$beta)]*sqrt(n), labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+
+@
+
+<<eval=FALSE>>=
+alpha<-0.2
+opt<-cv.glmnet(X.std, y,family="binomial", alpha = alpha, nlambda = 100,foldid=folds)
+Path<-glmnet(X.std, y,family="binomial", alpha = alpha, nlambda = 100)
+beta.opt<-Path$beta[,which.min(opt$cvm)]#glmnet(X.std, y,family="binomial", alpha = alpha, lambda = opt$lambda)
+
+@
+
+<<fig=TRUE,eval=FALSE>>=
+
+par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
+matplot(colSums(abs(Path$beta))/max(colSums(abs(Path$beta))),t(Path$beta)*sqrt(n),type="l",ylab=ylab.text,xlab=xlab.text,main="Elastic Net (glmnet, a=0.2)",lwd=size.width)
+abline(v=sum(abs(beta.opt))/max(colSums(abs(Path$beta))))
+axis(4, at = Path$beta[,ncol(Path$beta)]*sqrt(n), labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+
+@
+
+ELASTIC NET   lqa with $\lambda_1$, $\lambda_2$
+
+
+Fixed Tuning parameter
+<<eval=FALSE>>=
+lambda2 <- 1
+
+### COEF BUILD-UPS
+
+main.text<-"Elastic Net"
+penalty.family<-enet
+
+Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family, offset.values = c (NA, lambda2),add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,standardize = TRUE,show.standardized=TRUE)
+set.seed(123)
+cv.result<-cv.lqa(y, X, intercept = TRUE, lambda.candidates= list(exp(seq(-10, 6, length = 60)),lambda2), family=family, penalty.family=penalty.family, standardize = TRUE,  n.fold=n.fold, loss.func = "dev.loss", control = lqa.control())
+@
+
+
+<<fig=TRUE,eval=FALSE>>=
+
+par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.lab,cex.main=size.main)
+matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,main=main.text,lwd=size.width)
+abline(v=sum(abs(cv.result$beta.opt[-1]%*%diag(c(sd(X)))*sqrt(n)))/sum(abs(Plot.mat$beta.mat[1, ])))
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+
+@
+
+
+\end{document}

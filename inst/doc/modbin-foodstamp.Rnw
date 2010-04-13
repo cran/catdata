@@ -1,0 +1,27 @@
+% \VignetteIndexEntry{Foodstamp - Residuals of Logistic Regression}
+
+\documentclass[a4paper]{article}
+
+\title{Foodstamp - Residuals of Logistic Regression}
+
+\begin{document}
+
+\maketitle
+
+Load and attach the data foodstamp.
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(foodstamp)
+attach(foodstamp)
+@
+With binary resonse one can fit a logit model.
+<<eval=FALSE>>=
+food1 <- glm(y ~ TEN + SUP + INC, family=binomial, data=foodstamp)
+summary(food1)
+@
+Have a look at the distribution of the residuals. Therefore a Normal Q-Q Plot is generated.
+<<fig=TRUE,eval=FALSE>>=
+plot(food1,2)
+@
+
+\end{document}

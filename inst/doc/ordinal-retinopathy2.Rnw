@@ -1,0 +1,149 @@
+% \VignetteIndexEntry{Retinopathy - Sequential Logit Models}
+% \VignetteDepends{VGAM}
+
+
+\documentclass[a4paper]{article}
+
+\title{Retinopathy - Sequential Logit Models}
+
+\begin{document}
+
+\maketitle
+
+<<echo=FALSE,eval=FALSE>>=
+rm(list=ls())
+options(width=55)
+@
+
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(retinopathy)
+attach(retinopathy)
+@
+
+For sequential models again the "vglm"--function from the "VGAM"--library is needed, but now family option "sratio" is required.
+<<eval=FALSE>>=
+library(VGAM)
+@
+
+Now several sequential logit models are fitted and compared by their corresponding deviances. The first model
+is the sequential logit model with all category--specific effects, so the option "parallel=FALSE" is used.
+
+<<eval=FALSE>>=
+seqm1 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE))
+deviance(seqm1)
+@
+
+No category--specific effect for DIAB:
+
+<<eval=FALSE>>=
+seqm2 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE ~ SM + GH + BP))
+deviance(seqm2)
+@
+
+Testing the removed effect:
+<<eval=FALSE>>=
+1-pchisq(deviance(seqm2)-deviance(seqm1), df=1)
+@
+
+No category--specific effect for GH:
+
+<<eval=FALSE>>=
+seqm3 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE ~ SM + BP))
+deviance(seqm3)
+@
+
+Testing the removed effect:
+<<eval=FALSE>>=
+1-pchisq(deviance(seqm3)-deviance(seqm2), df=1)
+@
+
+No category--specific effect for BP:
+
+<<eval=FALSE>>=
+seqm4 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE ~ SM))
+deviance(seqm4)
+@
+
+Testing the removed effect:
+<<eval=FALSE>>=
+1-pchisq(deviance(seqm4)-deviance(seqm3), df=1)
+@
+
+No category--specific effect for GH (only global effects):
+
+<<eval=FALSE>>=
+seqm5 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=TRUE))
+deviance(seqm5)
+@
+
+Testing the removed effect:
+<<eval=FALSE>>=
+1-pchisq(deviance(seqm5)-deviance(seqm4), df=1)
+@
+
+As the last test is significant, model "seqm4" is analyzed in detail.
+
+<<eval=FALSE>>=
+summary(seqm4)
+@
+
+The summary gives no p--values for the individual covariates, they have to be computed separately. 
+For this purpose the t--values are copied from the summary. The quadratic t--values are the wald--statistics which can be used to produce the individual 
+p--values.
+
+\bigskip
+
+p--value intercept1:
+<<eval=FALSE>>=
+1 - pchisq(9.5223^2, df=1)
+@
+
+p--value intercept2:
+<<eval=FALSE>>=
+1 - pchisq(8.9957^2, df=1)
+@
+
+p--value SM1:
+<<eval=FALSE>>=
+1 - pchisq((-1.8646)^2, df=1)
+@
+
+p--value SM2:
+<<eval=FALSE>>=
+1 - pchisq(1.5687^2, df=1)
+@
+
+p--value DIAB:
+<<eval=FALSE>>=
+1 - pchisq((-10.4303)^2, df=1)
+@
+
+p-value GH:
+<<eval=FALSE>>=
+1 - pchisq((-6.3116)^2, df=1)
+@
+
+p--value BP:
+<<eval=FALSE>>=
+1 - pchisq((-5.1037)^2, df=1)
+@
+
+To receive the corresponding odds--ratios, the following command can be used.
+
+<<eval=FALSE>>=
+exp(coefficients(seqm4)[3:7])
+@
+
+<<eval=FALSE>>=
+detach(retinopathy)
+@
+
+<<echo=FALSE,eval=FALSE>>=
+detach(package:VGAM)
+@
+\end{document}
+
+
+
+
