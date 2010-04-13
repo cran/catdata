@@ -1,4 +1,4 @@
-\name{encephalitis}
+  \name{encephalitis}
 \alias{encephalitis}
 \docType{data}
 \encoding{UTF-8}

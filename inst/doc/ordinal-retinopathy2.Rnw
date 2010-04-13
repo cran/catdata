@@ -12,7 +12,7 @@
 
 <<echo=FALSE,eval=FALSE>>=
 rm(list=ls())
-options(width=55)
+options(width=80)
 @
 
 <<results=hide,eval=FALSE>>=
@@ -30,14 +30,16 @@ Now several sequential logit models are fitted and compared by their correspondi
 is the sequential logit model with all category--specific effects, so the option "parallel=FALSE" is used.
 
 <<eval=FALSE>>=
-seqm1 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE))
+seqm1 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", 
+parallel=FALSE))
 deviance(seqm1)
 @
 
 No category--specific effect for DIAB:
 
 <<eval=FALSE>>=
-seqm2 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE ~ SM + GH + BP))
+seqm2 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", 
+parallel=FALSE ~ SM + GH + BP))
 deviance(seqm2)
 @
 
@@ -49,7 +51,8 @@ Testing the removed effect:
 No category--specific effect for GH:
 
 <<eval=FALSE>>=
-seqm3 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE ~ SM + BP))
+seqm3 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", 
+parallel=FALSE ~ SM + BP))
 deviance(seqm3)
 @
 
@@ -61,7 +64,8 @@ Testing the removed effect:
 No category--specific effect for BP:
 
 <<eval=FALSE>>=
-seqm4 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=FALSE ~ SM))
+seqm4 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", 
+parallel=FALSE ~ SM))
 deviance(seqm4)
 @
 
@@ -73,7 +77,8 @@ Testing the removed effect:
 No category--specific effect for GH (only global effects):
 
 <<eval=FALSE>>=
-seqm5 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", parallel=TRUE))
+seqm5 <- vglm(RET ~ SM + DIAB + GH + BP, family = sratio (link="logit", 
+parallel=TRUE))
 deviance(seqm5)
 @
 

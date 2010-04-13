@@ -1,5 +1,5 @@
 % \VignetteIndexEntry{Regularization and Variable Selection for Parametric Models (3)}
-% \VignetteDepends{lqa, lpSolve, mboost, GAMBoost, glmnet, penalized}
+% \VignetteDepends{lqa}
 
 \documentclass[a4paper]{article}
 
@@ -11,26 +11,20 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 <<eval=FALSE>>=
 library(lqa)
-library(lpSolve)
-library(mboost)
-library(GAMBoost)
-library(glmnet)
-library(penalized)
-source("gdscode.txt")
-
-source("glmOSCAR_101028.r")
-load("heart.data.RData")
 @
 
 <<eval=FALSE>>=
-X<-heart.data$x
-X.std<-scale(X,center=TRUE,scale=TRUE)
-y<-heart.data$y
+library(catdata)
+data(heart, package="catdata")
+
+X<-heart[,-1]
+y<-heart[,1]
+X.std<-scale(X)
 p<-ncol(X)
 n<-length(y)
 family <- binomial()
@@ -52,7 +46,7 @@ colour=1
 
 
 
- LASSO IMPROVED CORRELATION BASED (with $L_1$ term)
+LASSO IMPROVED CORRELATION BASED (with $L_1$ term)
 
 Fixed Tuning parameter
 <<eval=FALSE>>=
@@ -63,18 +57,19 @@ lambda2 <- 0.05
 main.text<-"Lasso Improved Correlation Based"
 penalty.family<-licb
 
-Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family, offset.values = c (NA, lambda2),add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,show.standardized=TRUE)
-set.seed(123)
-cv.result<-cv.lqa(y, X, intercept = TRUE, lambda.candidates= list(exp(seq(-10, 6, length = 60)),lambda2), family=family, penalty.family=penalty.family, standardize = TRUE,  n.fold=n.fold, loss.func = "dev.loss", control = lqa.control())
+Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family,
+offset.values = c (NA, lambda2),add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,
+show.standardized=TRUE)
 @
 
 
 <<fig=TRUE,eval=FALSE>>=
 
 par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.lab,cex.main=size.main)
-matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,main=main.text,lwd=size.width)
-abline(v=sum(abs(cv.result$beta.opt[-1]%*%diag(c(sd(X)))*sqrt(n)))/sum(abs(Plot.mat$beta.mat[1, ])))
-axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,
+main=main.text,lwd=size.width)
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,
+cex.axis=size.right)
 
 @
 
@@ -87,18 +82,18 @@ COEF BUILD-UPS
 main.text<-"Correlation Based"
 penalty.family<-penalreg
 
-Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family, add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,show.standardized=TRUE,gamma=0.01)
-set.seed(123)
-cv.result<-cv.lqa(y, X, intercept = TRUE, lambda.candidates= list(exp(seq(-10, 6, length = 60))), family=family, penalty.family=penalty.family, standardize = TRUE,  n.fold=n.fold, loss.func = "dev.loss", control = lqa.control(),gamma=0.01)
+Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family,
+add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,show.standardized=TRUE,gamma=0.01)
 @
 
 
 <<fig=TRUE,eval=FALSE>>=
 
 par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
-matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,main=main.text,lwd=size.width)
-abline(v=sum(abs(cv.result$beta.opt[-1]%*%diag(c(sd(X)))*sqrt(n)))/sum(abs(Plot.mat$beta.mat[1, ])))
-axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,
+main=main.text,lwd=size.width)
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,
+cex.axis=size.right)
 
 @
 
@@ -107,37 +102,19 @@ axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.
 <<eval=FALSE>>=
 parcorr=10.5
 max.steps=20
-Path<- ForwardBoost (X.std, y,family = binomial(), penalty = penalreg(parcorr), intercept =  TRUE,   nu = 1, monotonic = TRUE,control=lqa.control(max.steps=20,conv.stop = FALSE))
-folds<-rep(0,n)
-set.seed(123)
-cv.folds <- split(sample(seq(n)), rep(1:n.fold,length = n))
-for(i in 1:n.fold)
-{
-folds[c(cv.folds[[i]])]<-i
-}
-DEV<-matrix(0,n.fold,max.steps)
-for(i in 1:n.fold)
-{
-X.cv<-X.std[folds!=i,]
-y.cv<-y[folds!=i]
-cv.mod<-ForwardBoost (X.cv, y.cv,family = binomial(), penalty = penalreg(0.0001), intercept =  TRUE,   nu = 1, monotonic = TRUE,control=lqa.control(max.steps=20,conv.stop = FALSE))
-for(j in 1:max.steps)
-{
-eta<-cbind(1,X.std[folds==i,])%*%cv.mod$beta.mat[j,]
-mu<-family$linkinv(eta)
-DEV[i,j]<-sum(family$dev.resids(y[folds==i], mu, rep(1,length(mu))))
-}
-}
-opt<-which.min(colSums(DEV))
+Path<- ForwardBoost (X.std, y,family = binomial(), penalty = penalreg(parcorr),
+intercept =  TRUE,   nu = 1, monotonic = TRUE,control=lqa.control(max.steps=20,
+conv.stop = FALSE))
 @
 
 <<fig=TRUE,eval=FALSE>>=
 
 par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
-matplot(rowSums(abs(Path$beta.mat[,-1]))/max(rowSums(abs(Path$beta.mat[,-1]))),Path$beta.mat[,-1]*sqrt(n),type="l",ylab=ylab.text,xlab=xlab.text,main="ForwardBoost",lwd=2.0)
-abline(v=sum(abs(Path$beta.mat[opt,-1]))/max(rowSums(abs(Path$beta.mat[,-1]))))
-axis(4, at = Path$beta.mat[max.steps, -1]*sqrt(n), labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
-
+matplot(rowSums(abs(Path$beta.mat[,-1]))/max(rowSums(abs(Path$beta.mat[,-1]))),
+Path$beta.mat[,-1]*sqrt(n),type="l",ylab=ylab.text,xlab=xlab.text,main=
+  "ForwardBoost",lwd=2.0)
+axis(4, at = Path$beta.mat[max.steps, -1]*sqrt(n), labels = colnames(X),
+adj = 0, las = 1,cex.axis=size.right)
 @
 
 

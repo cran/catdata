@@ -31,7 +31,7 @@ Agresti, A. (2002) \emph{Categorical Data Analysis}. Wiley
 \examples{
 \dontrun{
 ##look for:
-vignette("loglinear-deathpenalty")
+data(deathpenalty)
 }
 }
 \keyword{datasets}

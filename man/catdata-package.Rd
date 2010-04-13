@@ -79,6 +79,15 @@ refers to Chapter 4 (Modeling of Binary Data) and the data set dust.
 \itemize{
 \item altbin-teratology: Example 5.1
 }
+\item Chapter 6:
+\itemize{
+\item regsel-heartdisease1: Example 6.1, Example 6.2
+\item regsel-heartdisease2: Example 6.3
+\item regsel-heartdisease3
+\item regsel-heartdisease4: Example 6.4
+\item regsel-heartdisease5: Example 6.5
+\item regsel-heartdisease6
+}
 \item Chapter 7:
 \itemize{
 \item count-children: Example 7.3
@@ -133,10 +142,15 @@ refers to Chapter 4 (Modeling of Binary Data) and the data set dust.
 \item random-betablocker: Example 14.7
 \item random-knee3: Example 14.8
 }
+\item Chapter 15:
+\itemize{
+\item prediction-glass: Example 15.4
+\item prediction-medcare: Example 15.8
+}
 }
 }
 \author{
-Gerhard Tutz, Marcus Groß, Sarah Maierhofer, Gunther Schauberger
+Gerhard Tutz and Gunther Schauberger with contributions from Sarah Maierhofer and Marcus Groß
 
 Maintainer: \cr
 Gunther Schauberger <gunther.schauberger@stat.uni-muenchen.de> \cr

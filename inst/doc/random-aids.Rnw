@@ -11,7 +11,7 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 The "AIDS"--data from "catdata" are loaded.
@@ -31,7 +31,8 @@ The Semiparametric Mixed Model (or Generalized Additive Mixed Model) for "AIDS"-
 the random intercept.
 
 <<eval=FALSE>>=
-gammaids<-gamm(cd4 ~ s(time) + drugs + partners + s(cesd) + s(age), random=list(person=~1),  family=poisson(link=log), data=aids)
+gammaids<-gamm(cd4 ~ s(time) + drugs + partners + s(cesd) + s(age), 
+               random=list(person=~1),  family=poisson(link=log), data=aids)
 @
 
 The summary of the fixed effects is printed.
@@ -53,6 +54,9 @@ plot(gammaids$gam,ylab=" ",cex.lab=1.8,cex.axis=1.5,select=2)
 
 <<fig=TRUE, width=12, height=9,eval=FALSE>>=
 plot(gammaids$gam,ylab=" ",cex.lab=1.8,cex.axis=1.5,select=3)
+@
+<<echo=FALSE,results=hide,eval=FALSE>>=
+detach(package:mgcv)
 @
 
 \end{document}

@@ -10,16 +10,14 @@
 \maketitle
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=55)
+options(width=80)
 @
 
 
 At the beginning the knee dataset is loaded:
-<<echo=FALSE,eval=FALSE>>=
-rm(list=ls(all=TRUE))
-@
 
 <<results=hide,eval=FALSE>>=
+rm(list=ls(all=TRUE))
 library(catdata)
 data(knee)
 attach(knee)
@@ -27,7 +25,7 @@ attach(knee)
 
 First of all a simple $\chi^{2}$ -- test of independence between the therapy (Th) and the pain level (R4) is applied.
 <<eval=FALSE>>=
-suppressWarnings(chisq.test(Th,R4))
+suppressWarnings(chisq.test(knee$Th,knee$R4))
 @
 
 In the following the variable Age is centered around $30$ years and the quadratic variable Age2 is created.
@@ -133,7 +131,8 @@ library(VGAM)
 @
 
 <<eval=FALSE>>=
-m.vglm <- vglm(R4 ~ Th + Sex + Age + Age2, family = cumulative (link="logit", parallel=TRUE))
+m.vglm <- vglm(R4 ~ Th + Sex + Age + Age2, family = cumulative (link="logit", 
+parallel=TRUE))
 summary(m.vglm)
 @
 

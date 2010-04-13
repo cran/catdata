@@ -11,7 +11,7 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 For GAMs the package "mgcv" is used.
@@ -26,7 +26,8 @@ The first model uses bivariate smoothing for the covariates "dust" and "years" f
 bivariate effect can be plotted three--dimensional.
 
 <<fig=TRUE,eval=FALSE>>=
-gamdust1 <- gam(bronch ~ s(dust,years), family=binomial, data=dust[(dust$dust<10) & (dust$smoke==1),])
+gamdust1 <- gam(bronch ~ s(dust,years), family=binomial, 
+                data=dust[(dust$dust<10) & (dust$smoke==1),])
 
 plot(gamdust1, pers=TRUE)
 @
@@ -34,7 +35,8 @@ plot(gamdust1, pers=TRUE)
 Now each covariate is fitted separately, afterwards both effects are plotted.
 
 <<eval=FALSE>>=
-gamdust2<- gam(bronch ~ s(dust) + s(years), family=binomial, data=dust[(dust$dust<10) & (dust$smoke==1),])
+gamdust2<- gam(bronch ~ s(dust) + s(years), family=binomial, 
+               data=dust[(dust$dust<10) & (dust$smoke==1),])
 @
 <<fig=TRUE, width=8,eval=FALSE>>=
 plot(gamdust2, select=1)

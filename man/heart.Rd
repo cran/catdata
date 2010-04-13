@@ -29,5 +29,10 @@ Elements of Statistical Learning; Data Mining, Inference, and Prediction, Spring
 \examples{
 ##example of analysis:
 vignette("regsel-heartdisease1")
+vignette("regsel-heartdisease2")
+vignette("regsel-heartdisease3")
+vignette("regsel-heartdisease4")
+vignette("regsel-heartdisease5")
+vignette("regsel-heartdisease6")
 }
 \keyword{datasets}

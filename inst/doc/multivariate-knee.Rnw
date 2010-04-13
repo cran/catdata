@@ -90,7 +90,7 @@ summary(gee2a)
 
 Finally a GEE with exponential correlation structure is fitted:
 
-<<results=hide, eval=FALSE>>=
+<<results=hide,eval=FALSE>>=
 gee3a <- gee(Response ~ Th + Sex + Age + Age2, id=N,
 family=binomial(link=logit), corstr="AR-M", Mv=1)
 @

@@ -9,7 +9,6 @@
 \maketitle
 
 <<echo=FALSE,eval=FALSE>>=
-rm(list=ls(all=TRUE))
 options(width=85)
 @
 
@@ -77,35 +76,41 @@ The parameter estimates remain the same, but the deviances and the AIC differ fr
 
 
 <<eval=FALSE>>=
-genderleveldat<-data.frame("Long term"=unemployment[,1],"Short term"=unemployment[,2],"Level"=rep(1:4,2),"Gender"=rep(c(1,0),each=4))
+genderleveldat<-data.frame("Long term"=unemployment[,1],
+"Short term"=unemployment[,2],"Level"=rep(1:4,2),"Gender"=rep(c(1,0),each=4))
 
-groupintercept<-glm(cbind(Long.term, Short.term) ~ 1, family=binomial, data=genderleveldat)
+groupintercept<-glm(cbind(Long.term, Short.term) ~ 1, family=binomial, 
+                    data=genderleveldat)
 summary(groupintercept)
 
 #Corresponding un-grouped model:
 summary(unemp_1)
 
-groupgender<-glm(cbind(Long.term, Short.term) ~ Gender, family=binomial, data=genderleveldat)
+groupgender<-glm(cbind(Long.term, Short.term) ~ Gender, family=binomial, 
+                 data=genderleveldat)
 summary(groupgender)
 
 #Corresponding un-grouped model:
 summary(unemp_G)
 
 
-grouplevel<-glm(cbind(Long.term, Short.term) ~ as.factor(Level), family=binomial, data=genderleveldat)
+grouplevel<-glm(cbind(Long.term, Short.term) ~ as.factor(Level), family=binomial, 
+                data=genderleveldat)
 summary(grouplevel)
 
 #Corresponding un-grouped model:
 summary(unemp_L)
 
 
-groupgenderlevel<-glm(cbind(Long.term, Short.term) ~ as.factor(Gender) + as.factor(Level), family=binomial, data=genderleveldat)
+groupgenderlevel<-glm(cbind(Long.term, Short.term) ~ as.factor(Gender) + 
+  as.factor(Level), family=binomial, data=genderleveldat)
 summary(groupgenderlevel)
 
 #Corresponding un-grouped model:
 summary(unemp_LG)
 
-groupsat<-glm(cbind(Long.term, Short.term) ~ as.factor(Gender) * as.factor(Level), family=binomial, data=genderleveldat)
+groupsat<-glm(cbind(Long.term, Short.term) ~ as.factor(Gender) * as.factor(Level), 
+              family=binomial, data=genderleveldat)
 summary(groupsat)
 
 #Corresponding un-grouped model:

@@ -34,7 +34,6 @@
 \dontrun{
 ##look for:
 vignette("binary-vaso")
-vignette("modbin-vaso")
 }
 }
 \keyword{datasets}

@@ -10,8 +10,8 @@
 \maketitle
 
 <<echo=FALSE,eval=FALSE>>=
-rm(list=ls())
-options(width=55)
+options(width=80)
+rm(list=ls(all=TRUE))
 @
 
 <<results=hide,eval=FALSE>>=

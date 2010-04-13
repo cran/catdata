@@ -11,7 +11,7 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 First the "Addiction"--Data from "catdata" are loaded and attached.
@@ -45,7 +45,8 @@ university1 <- rep(1, n)
 university0 <- rep(0, n)
 
 datamale <- as.data.frame(cbind(gender=gender0,age=ageindex,university=university1))
-datafemale <- as.data.frame(cbind(gender=gender1,age=ageindex,university=university1))
+datafemale <- as.data.frame(cbind(gender=gender1,age=ageindex,
+                                  university=university1))
 @
 
 For the hierarchical model a new reponse "ill01" is created.
@@ -61,7 +62,8 @@ Now the two GAMs for the hierarchical model are fitted, "gam1" models category "
 
 <<eval=FALSE>>=
 gam1 <- gam(as.factor(ill01) ~ s(age) + gender + university, family=binomial())
-gam2 <- gam(as.factor(ill) ~ s(age) + gender + university, family=binomial(), data=addiction[addiction$ill!=2,])
+gam2 <- gam(as.factor(ill) ~ s(age) + gender + university, family=binomial(), 
+            data=addiction[addiction$ill!=2,])
 @
 
 Then the corresponding summaries are printed.
@@ -112,23 +114,29 @@ Now finally the probabilities for the respective categories can be plotted.
 
 <<fig=TRUE,width=16, height=8.5,eval=FALSE>>=
 par(mfrow=c(1,2), cex=1.8)
-plot(ageindex, p0, type="l", lty=1, ylim=c(0,1), main="men with university degree", ylab="probabilities")
+plot(ageindex, p0, type="l", lty=1, ylim=c(0,1), main="men with university degree",
+     ylab="probabilities")
 lines(ageindex, p1, lty="dotted")
 lines(ageindex, p2, lty="dashed")
-legend("topright", legend=c("Weak-willed", "diseased", "both"), lty=c("solid", "dotted", "dashed"))
+legend("topright", legend=c("Weak-willed", "diseased", "both"), 
+       lty=c("solid", "dotted", "dashed"))
 
 
-plot(ageindex, pf0, type="l", lty=1, ylim=c(0,1), main="women with university degree", ylab="probabilities")
+plot(ageindex, pf0, type="l", lty=1, ylim=c(0,1), 
+     main="women with university degree", ylab="probabilities")
 lines(ageindex, pf1, lty="dotted")
 lines(ageindex, pf2, lty="dashed")
-legend("topright", legend=c("Weak-willed", "diseased", "both"), lty=c("solid", "dotted", "dashed"))
+legend("topright", legend=c("Weak-willed", "diseased", "both"),
+       lty=c("solid", "dotted", "dashed"))
 @
 
 The models "gam3" and "gam4" compare category 0 versus 1 and category 0 versus 2 respectively. 
 
 <<eval=FALSE>>=
-gam3 <- gam(as.factor(ill)~ s(age) + gender + university, data=addiction[addiction$ill!=2,], family=binomial())
-gam4 <- gam(as.factor(ill)~ s(age) + gender + university, data=addiction[addiction$ill!=1,], family=binomial())
+gam3 <- gam(as.factor(ill)~ s(age) + gender + university, 
+            data=addiction[addiction$ill!=2,], family=binomial())
+gam4 <- gam(as.factor(ill)~ s(age) + gender + university, 
+            data=addiction[addiction$ill!=1,], family=binomial())
 @
 
 

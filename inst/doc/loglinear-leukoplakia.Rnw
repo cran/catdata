@@ -26,11 +26,13 @@ leukoplakia<-expand.dft(leukoplakia,freq="Freq")
 Mosaic plots are created by "mosaicplot".
 
 <<fig=TRUE,eval=FALSE>>=
-mosaicplot(~ Leukoplakia+Smoker+Alcohol,main ="", data = leukoplakia, color = TRUE, cex.axis=1.0)
+mosaicplot(~ Leukoplakia+Smoker+Alcohol,main ="", data = leukoplakia, 
+           color = TRUE, cex.axis=1.0)
 @
 
 <<fig=TRUE,eval=FALSE>>=
-mosaicplot(~ Leukoplakia+Smoker,main ="", data = leukoplakia, color = TRUE, cex.axis=1.0)
+mosaicplot(~ Leukoplakia+Smoker,main ="", data = leukoplakia, color = TRUE, 
+           cex.axis=1.0)
 @
 
 <<echo=FALSE,eval=FALSE>>=

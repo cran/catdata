@@ -116,7 +116,8 @@ For a mixed model to be fitted by Gauss--Hermite quadrature we need the function
 with the option "method='ghq'", the favoured number of quadrature points is determined by the option "n.points".
 
 <<eval=FALSE>>=
-mGaussH <- glmmML(y ~ as.factor(Grp), cluster=Rat, method = "ghq", n.points = 14, boot = 0) 
+mGaussH <- glmmML(y ~ as.factor(Grp), cluster=Rat, method = "ghq", n.points = 14,
+                  boot = 0) 
 summary(mGaussH)
 @
 
@@ -140,12 +141,13 @@ Due to random processes the results of different runs of "stepFlexmix" will diff
 
 <<results=hide,eval=FALSE>>=
 detach(package:nlme)
+detach(package:VGAM)
 library(stats4)
 @
 
 <<eval=FALSE>>=
 mDiscmix <-stepFlexmix(cbind(D,L) ~ 1, k = 2, nrep=5,
-                 model = FLXMRglmfix(family = "binomial",  fixed = ~as.factor(Grp)))
+                 model = FLXMRglmfix(family = "binomial",fixed =~as.factor(Grp)))
 summary(mDiscmix)
 parameters(mDiscmix)
 @

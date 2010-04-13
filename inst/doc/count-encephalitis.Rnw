@@ -14,7 +14,7 @@ data(encephalitis)
 attach(encephalitis)
 @
 
-%
+
 Some variables are renamed and recoded befor fitting the model.
 <<eval=FALSE>>=
 BAV <- country
@@ -37,7 +37,8 @@ summary(enc2)
 %
 Fit of loglinear Normal Model. That means a normal model with log-link.
 <<eval=FALSE>>=
-enc3 <- glm(count ~ TIME+I(TIME^2)+BAV+TIME*BAV, family = gaussian("log"), start=enc1$coef)
+enc3 <- glm(count ~ TIME+I(TIME^2)+BAV+TIME*BAV, family = gaussian("log"), 
+            start=enc1$coef)
 summary(enc3)
 @
 

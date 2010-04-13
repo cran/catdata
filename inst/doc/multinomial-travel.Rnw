@@ -32,7 +32,8 @@ For the use of the function "mlogit"  an appropriate data set has to be built. T
 the function "mlogit.data". 
 
 <<eval=FALSE>>=
-travel.long <- mlogit.data(ModeChoice, choice="mode", shape="long", alt.levels=c("air","train","bus","car"))
+travel.long <- mlogit.data(ModeChoice, choice="mode", shape="long", alt.levels=
+c("air","train","bus","car"))
 @
 
 Now  the model can be fitted. In the formula first the category--specific effects and then, 
@@ -52,11 +53,14 @@ library(VGAM)
 At first the data need to be prepared adequately to be ready for use with the function "vglm".
 
 <<eval=FALSE>>=
-travelmode <- matrix(ModeChoice$mode, byrow = T, ncol = 4); colnames(travelmode) = c("air","train","bus","car")
+travelmode <- matrix(ModeChoice$mode, byrow = T, ncol = 4)
+colnames(travelmode) <- c("air","train","bus","car")
 travelhinc <- matrix(ModeChoice$hinc, byrow = T, ncol = 4)
 travelhinc <- travelhinc[,1]
-travelinvt <- matrix(ModeChoice$invt, byrow = T, ncol = 4); colnames(travelinvt) = c("invtair","invttrain","invtbus","invtcar")
-travelgc <- matrix(ModeChoice$gc, byrow = T, ncol = 4); colnames(travelgc) = c("gcair","gctrain","gcbus","gccar")
+travelinvt <- matrix(ModeChoice$invt, byrow = T, ncol = 4)
+colnames(travelinvt) <- c("invtair","invttrain","invtbus","invtcar")
+travelgc <- matrix(ModeChoice$gc, byrow = T, ncol = 4)
+colnames(travelgc) <- c("gcair","gctrain","gcbus","gccar")
 
 travelinvt <- sweep(travelinvt[,-1], 1, travelinvt[,1])
 travelgc <- sweep(travelgc[,-1], 1, travelgc[,1])
@@ -89,6 +93,11 @@ At last we compare the coefficients of the two fitted models.
 <<eval=FALSE>>=
 summary(travel.kat.id)$CoefTable
 summary(fit)@coef3
+@
+
+<<echo=FALSE,results=hide,eval=FALSE>>=
+detach(package:VGAM)
+detach(package:mlogit)
 @
 
 \end{document}

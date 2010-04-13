@@ -11,7 +11,7 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 First the dust data are loaded from the package "catdata".
@@ -30,7 +30,9 @@ library(rpart)
 Now a tree is fitted. We take "years" as the only covariate, "bronch" is the binary response. Afterwards the corresponding tree is plotted.
 
 <<fig=TRUE, width=8,eval=FALSE>>=
-tree1 <-rpart(as.factor(bronch) ~ years, data = dust, 	method = "class",control = rpart.control(cp = 0.001,  parms=list(split='information'),	maxdepth = 4))
+tree1 <-rpart(as.factor(bronch) ~ years, data = dust, 	method = "class",
+              control = rpart.control(cp = 0.001,  parms=list(split='information'),
+                                      maxdepth = 4))
 plot(tree1, xpd=TRUE)
 text(tree1)
 @
@@ -126,4 +128,9 @@ treeP2 <-ctree(as.factor(bronch) ~ smoke + years + dust, data = dust)
 plot(treeP2)
 @
 
+
+<<echo=FALSE,results=hide,eval=FALSE>>=
+detach(package:rpart)
+detach(package:party)
+@
 \end{document}

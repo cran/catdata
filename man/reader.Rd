@@ -21,10 +21,5 @@ The \code{reader} data contains information on the reading behaviour of women re
   Multivariate statistische Verfahren,
   Berlin: de Gruyter  
   }
-\examples{
-\dontrun{
-##look for:
-vignette("loglinear-reader")
-}
-}
+
 \keyword{datasets}

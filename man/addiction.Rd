@@ -8,7 +8,7 @@ The \code{addiction} data stems from a survey comprising 712 respondents.
 }
 \usage{data(addiction)}
 \format{
-  A data frame with 682 observations on the following 4 variables.
+  A data frame with 712 observations on the following 4 variables.
   \describe{
     \item{\code{ill}}{are addicted weak-willed(0) deseased(1) or both(2)}
     \item{\code{gender}}{male = 0, female = 1}
@@ -21,7 +21,10 @@ The \code{addiction} data stems from a survey comprising 712 respondents.
 \examples{
 \dontrun{
 ##look for:
-vignette("addiction")
+vignette("semiparametric-addiction")
+vignette("multinomial-addiction1")
+vignette("multinomial-addiction2")
+
 }
 }
 \keyword{datasets}

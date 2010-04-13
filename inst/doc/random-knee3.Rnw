@@ -11,7 +11,7 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 The "knee"--data from "catdata" are loaded.
@@ -26,7 +26,8 @@ The data set contains longitudinal data and is currently in the "wide" format,  
 In addition the response is dichotomized, "age" is centered around 30 and a quadratic effect "age2" of age is created.
 
 <<eval=FALSE>>=
-knee <- reshape(knee, direction="long", varying=list(5:8), v.names="R",timevar="Time")
+knee <- reshape(knee, direction="long", varying=list(5:8), v.names="R",
+                timevar="Time")
 
 knee$RD <- rep(0, length(knee$R))
 knee$RD[knee$R>2] <- 1
@@ -52,18 +53,18 @@ Now some discrete mixture models are fitted, each with another number of compone
 "Age2" while the intercepts vary across components. 
 
 <<eval=FALSE>>=
-kneeflex2 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = "binomial", fixed= ~ Th + Sex + Age + Age2), k = 2, nrep = 5, data = knee)
+kneeflex2 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = 
+  "binomial", fixed= ~ Th + Sex + Age + Age2), k = 2, nrep = 5, data = knee)
 
-kneeflex3 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = "binomial", fixed= ~ Th + Sex + Age + Age2), k = 3, nrep = 5, data = knee)
+kneeflex3 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = 
+  "binomial", fixed= ~ Th + Sex + Age + Age2), k = 3, nrep = 5, data = knee)
 
-kneeflex4 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = "binomial", fixed= ~ Th + Sex + Age + Age2), k = 4, nrep = 5, data = knee)
+kneeflex4 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = 
+  "binomial", fixed= ~ Th + Sex + Age + Age2), k = 4, nrep = 5, data = knee)
 @
 
 We compare the fitted models by BIC.
 
-<<eval=FALSE>>=
-detach(package:nlme)
-@
 
 <<eval=FALSE>>=
 summary(kneeflex2)@BIC

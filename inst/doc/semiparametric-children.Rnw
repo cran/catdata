@@ -11,7 +11,7 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 For the following partially additive model  the "children"--data from the package "catdata" are used. 
@@ -30,7 +30,8 @@ library(mgcv)
 Here the model is fitted and the summary is printed.
 
 <<eval=FALSE>>=
-gamchild <- gam(child ~ s(age) + s(dur) + as.factor(nation) + as.factor(god) + as.factor(univ), data=children, family=poisson(link=log))
+gamchild <- gam(child ~ s(age) + s(dur) + as.factor(nation) + as.factor(god) + 
+  as.factor(univ), data=children, family=poisson(link=log))
 
 summary(gamchild)
 @

@@ -28,7 +28,8 @@ betablocker$Treatment <- as.factor(betablocker$Treatment)
 First a simple logit model is fitted with the only covariate "Treatment".
 
 <<eval=FALSE>>=
-GlmT <- glm(cbind(Deaths, Total	- Deaths) ~ Treatment, family = "binomial", data = betablocker)
+GlmT <- glm(cbind(Deaths, Total	- Deaths) ~ Treatment, family = "binomial", 
+data = betablocker)
 summary(GlmT)
 @
 
@@ -36,7 +37,8 @@ Now the logit model  is extended by the factor "Center" which has 22 different v
 with 42 degrees of freedom to 23.62 with 21 degrees of freedom.
 
 <<eval=FALSE>>=
-GlmTC <- glm(cbind(Deaths, Total - Deaths) ~ Treatment + as.factor(Center), family 	= "binomial", data = betablocker)
+GlmTC <- glm(cbind(Deaths, Total - Deaths) ~ Treatment + as.factor(Center), 
+             family 	= "binomial", data = betablocker)
 summary(GlmTC)
 @
 
@@ -49,7 +51,8 @@ library(glmmML)
 First the random intercept model with 4 quadrature points is fitted.
 
 <<eval=FALSE>>=
-MixedGH4 <- glmmML(cbind(Deaths, Total - Deaths) ~ Treatment, cluster=Center, method = c("ghq"), n.points = 4, boot = 0, data=betablocker)
+MixedGH4 <- glmmML(cbind(Deaths, Total - Deaths) ~ Treatment, cluster=Center, 
+                   method = c("ghq"), n.points = 4, boot = 0, data=betablocker)
 
 summary(MixedGH4)
 @
@@ -57,7 +60,8 @@ summary(MixedGH4)
 Now we use 20 quadrature points but there is no big difference in coefficients.
 
 <<eval=FALSE>>=
-MixedGH20 <- glmmML(cbind(Deaths, Total - Deaths) ~ Treatment, cluster=Center, method = c("ghq"), n.points = 20, boot = 0, data=betablocker)
+MixedGH20 <- glmmML(cbind(Deaths, Total - Deaths) ~ Treatment, cluster=Center, 
+                    method = c("ghq"), n.points = 20, boot = 0, data=betablocker)
 
 summary(MixedGH20)
 @
@@ -74,7 +78,9 @@ detach(package:glmmML)
 @
 
 <<eval=FALSE>>=
-MixFix3 <-stepFlexmix(cbind(Deaths, Total - Deaths) ~ 1 | Center,	model = FLXMRglmfix(family = "binomial", fixed = ~ Treatment), k = 3, nrep = 5, data = betablocker)
+MixFix3 <-stepFlexmix(cbind(Deaths, Total - Deaths) ~ 1 | Center,	model = 
+  FLXMRglmfix(family = "binomial", fixed = ~ Treatment), k = 3, nrep = 5, 
+                      data = betablocker)
 @
 
 Typing the name of the fitted model yields the sizes of the three clusters.
@@ -89,16 +95,9 @@ The coefficients are printed by the command "parameters()".
 parameters(MixFix3)
 @
 
-The command "summary()" returns for example the estimated component weights and the BIC. The coefficients with standard errors and 
-p--values can be found by "summary(refit())".
-
+The command "summary()" returns for example the estimated component weights and the BIC. The coefficients with standard errors and p--values can be found by "summary(refit())".
 
 <<results=hide,eval=FALSE>>=
-library(stats4)
-detach(package:nlme)
-detach(package:geepack)
-detach(package:doBy)
-detach(package:lme4)
 library(flexmix)
 @
 
@@ -114,20 +113,25 @@ set.seed(5)
 Finally the discrete mixture model with 4 components is fitted.
 
 <<eval=FALSE>>=
-MixFix4 <-stepFlexmix(cbind(Deaths, Total - Deaths) ~ 1 | Center, model = FLXMRglmfix(family = "binomial", fixed = ~ Treatment), k = 4, nrep = 5, data = betablocker)
+MixFix4 <-stepFlexmix(cbind(Deaths, Total - Deaths) ~ 1 | Center, model = 
+  FLXMRglmfix(family = "binomial", fixed = ~ Treatment), k = 4, nrep = 5, 
+                      data = betablocker)
 @
 
 <<eval=FALSE>>=
 MixFix4
 @
 
-<<eval=FALSE>=
+<<eval=FALSE>>=
 parameters(MixFix4)
 @
 
 <<eval=FALSE>>=
 summary(MixFix4)
 summary(refit(MixFix4))
+@
+<<echo=FALSE,results=hide,eval=FALSE>>=
+detach(package:flexmix)
 @
 
 \end{document}

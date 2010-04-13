@@ -33,7 +33,7 @@ ins2 <- glm(insolv ~ case + I(case^2), family=quasipoisson, data=insolvency)
 summary(ins2)
 # plot(ins2)
 @
-An alternativ to a quasi-poisson model  the negative binomial distribution.
+An alternative to a quasi-poisson model is to use the negative binomial distribution.
 <<eval=FALSE>>=
 library(MASS)
 ins3 <- glm.nb(insolv ~ case + I(case^2),data=insolvency)

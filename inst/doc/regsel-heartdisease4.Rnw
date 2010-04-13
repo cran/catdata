@@ -1,5 +1,5 @@
 % \VignetteIndexEntry{Regularization and Variable Selection for Parametric Models (4)}
-% \VignetteDepends{lqa, lpSolve, mboost, GAMBoost, glmnet, penalized}
+% \VignetteDepends{lqa, lpSolve}
 
 \documentclass[a4paper]{article}
 
@@ -11,31 +11,26 @@
 
 
 <<echo=FALSE,eval=FALSE>>=
-options(width=60)
+options(width=80)
 @
 
 <<eval=FALSE>>=
-library(lqa)
 library(lpSolve)
-library(mboost)
-library(GAMBoost)
-library(glmnet)
-library(penalized)
+library(lqa)
 source("gdscode.txt")
-
-source("glmOSCAR_101028.r")
-load("heart.data.RData")
 @
 
 <<eval=FALSE>>=
-X<-heart.data$x
-X.std<-scale(X,center=TRUE,scale=TRUE)
-y<-heart.data$y
+library(catdata)
+data(heart, package="catdata")
+
+X<-heart[,-1]
+y<-heart[,1]
+X.std<-scale(X)
 p<-ncol(X)
 n<-length(y)
 family <- binomial()
 n.fold<-10
-
 
 ylab.text<-""
 xlab.text<-""
@@ -56,7 +51,7 @@ colour=1
 
  SCAD
 
-Fixed Tuning parameter  (s entspricht a)
+Fixed Tuning parameter 
 <<eval=FALSE>>=
 s <- 3
 
@@ -65,21 +60,22 @@ s <- 3
 main.text<-"SCAD"
 penalty.family<-scad
 
-Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family, offset.values = c (NA, s),add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,show.standardized=TRUE,gamma=0.01)
-set.seed(123)
-cv.result<-cv.lqa(y, X, intercept = TRUE, lambda.candidates= list(exp(seq(-10, 6, length = 60)),s), family=family, penalty.family=penalty.family, standardize = TRUE,  n.fold=n.fold, loss.func = "dev.loss", control = lqa.control(),gamma=0.01)
+Plot.mat<-plot.lqa (y = y, x = X, family=family, penalty.family=penalty.family,
+offset.values = c (NA, s),add.MLE = FALSE, ret.true=TRUE,really.plot = FALSE,
+show.standardized=TRUE,gamma=0.01)
 @
 
 <<fig=TRUE,eval=FALSE>>=
 
 par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
-matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,main=main.text,lwd=size.width, col=colour)
-abline(v=sum(abs(cv.result$beta.opt[-1]%*%diag(c(sd(X)))*sqrt(n)))/sum(abs(Plot.mat$beta.mat[1, ])))
-axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
+matplot(Plot.mat$s1,Plot.mat$beta.mat,type="l",ylab=ylab.text,xlab=xlab.text,
+main=main.text,lwd=size.width, col=colour)
+axis(4, at = Plot.mat$beta.mat[1, ], labels = colnames(X), adj = 0, las = 1,
+cex.axis=size.right)
 
 @
 
- Dantzig Selector 
+Dantzig Selector
 
 <<eval=FALSE>>=
 Path<-matrix(0,60,p)
@@ -88,20 +84,15 @@ for(i in 60:1)
 {
 Path[i,]<-dd(y,X.std,lambda=lambda1[i],family=binomial)$gds.beta[-1]*sqrt(n)
 }
-
-set.seed(123)
-opt <- dd.cv(y,X.std,family=binomial,lambda=lambda1,cv=10)
-beta.opt<-dd(y,X.std,family=binomial,lambda=opt$optimal)$gds.beta[-1]*sqrt(n)
 @
 
 
 <<fig=TRUE,eval=FALSE>>=
 
 par(oma=oma.vec,cex.axis=size.axis,cex.lab=size.axis,cex.main=size.main)
-matplot(rowSums(abs(Path))/max(rowSums(abs(Path))),Path,type="l",ylab=ylab.text,xlab=xlab.text,main="Dantzig Selector",lwd=size.width, col=colour)
-abline(v=sum(abs(beta.opt))/sum(abs(Path[1, ])))
+matplot(rowSums(abs(Path))/max(rowSums(abs(Path))),Path,type="l",ylab=ylab.text,
+xlab=xlab.text,main="Dantzig Selector",lwd=size.width, col=colour)
 axis(4, at = Path[1, ], labels = colnames(X), adj = 0, las = 1,cex.axis=size.right)
-
 @
 
 

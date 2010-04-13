@@ -23,6 +23,8 @@
 \dontrun{
 ##example of analysis:
 vignette("modbin-dust")
+vignette("semiparametric-dust")
+vignette("tree-dust")
 }
 }
 \keyword{datasets}

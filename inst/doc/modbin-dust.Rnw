@@ -20,7 +20,8 @@ summary(dustlogitnon1)
 @
 The same model as above is used without observation 1245 which can be regarded as an outlier:
 <<eval=FALSE>>=
-dustlogitnon2 <- glm(bronch ~ dust+years, family=binomial, data=dust[(dust$smoke==0)&(dust$dust<10),])
+dustlogitnon2 <- glm(bronch ~ dust+years, family=binomial, 
+                     data=dust[(dust$smoke==0)&(dust$dust<10),])
 summary(dustlogitnon2)
 @
 
@@ -32,7 +33,8 @@ summary(dustlogit1)
 @
 
 <<eval=FALSE>>=
-dustlogit2 <- glm(bronch ~ dust+years+smoke, family=binomial, data=dust[(dust$dust<20),])
+dustlogit2 <- glm(bronch ~ dust+years+smoke, family=binomial, 
+                  data=dust[(dust$dust<20),])
 summary(dustlogit2)
 @
 

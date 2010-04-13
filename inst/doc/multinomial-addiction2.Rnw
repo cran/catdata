@@ -37,7 +37,8 @@ age2 <- age^2
 Now the model for categories 0 and 1 versus 2 is fitted.
 
 <<eval=FALSE>>=
-m01vs2 <- glm(ill01 ~ as.factor(gender) + as.factor(university) + age + age2, family=binomial())
+m01vs2 <- glm(ill01 ~ as.factor(gender) + as.factor(university) + age + age2, 
+family=binomial())
 summary(m01vs2)
 @
 
@@ -53,7 +54,8 @@ age2 <- age^2
 Finally the model for categories 0 versus 1 is fitted.
 
 <<eval=FALSE>>=
-m0vs1 <- glm(ill ~ as.factor(gender) + as.factor(university) + age + age2, family=binomial())
+m0vs1 <- glm(ill ~ as.factor(gender) + as.factor(university) + age + age2, 
+family=binomial())
 summary(m0vs1)
 @
 

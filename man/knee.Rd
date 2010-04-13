@@ -27,5 +27,7 @@ After 3,7 and 10 days of treatment the pain occuring during knee movement was ob
 vignette("ordinal-knee1")
 vignette("ordinal-knee2")
 vignette("multivariate-knee")
+vignette("random-knee1")
+vignette("random-knee3")
 }
 \keyword{datasets}
