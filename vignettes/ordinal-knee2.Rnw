@@ -1,0 +1,132 @@
+% \VignetteIndexEntry{Knee Injuries - Comparison of Link Functions}
+% \VignetteDepends{VGAM}
+
+\documentclass[a4paper]{article}
+
+\title{Knee Injuries - Comparison of Link Functions}
+
+\begin{document}
+
+\maketitle
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+rm(list=ls(all=TRUE))
+@
+
+At the beginning the knee dataset is loaded:
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(knee)
+attach(knee)
+@
+
+
+In the following the variable Age is centered around $30$ years and the quadratic variable Age2 is created. 
+
+<<eval=FALSE>>=
+Age <- Age - 30
+Age2 <- Age^2
+@
+
+For the cumulative maximum extreme value (Gumbel) model that will be fitted later, the response has to be transformed so that afterwards the
+ordering of the response categories is reversed. 
+
+<<eval=FALSE>>=                                                        
+k <- length(unique(R4))
+R4rev <- k + 1 - R4
+@ 
+
+The response pain (R4 or R4rev) is an ordered factor, the covariates therapy (Th) and sex (Sex) need to be factors.
+
+<<eval=FALSE>>=
+R4 <- as.ordered(R4)
+R4rev <- as.ordered(R4rev)
+Th <- as.factor(Th)
+Sex <- as.factor(Sex)
+@
+ 
+With the "vglm"--function from the "VGAM"--library both cumulative and sequential models can be fitted.
+<<eval=FALSE>>= 
+library(VGAM)
+@
+
+To compare the performance of cumulative models with different link functions one can use the deviances of the respective models. At first four models with 
+four different link functions (Logit, Probit, Gumbel, Gompertz) are fitted.
+
+\bigskip
+
+Cumulative Logit model:
+<<eval=FALSE>>=
+clogit <- vglm(R4 ~ Th + Sex + Age +Age2, family = cumulative (link="logit", 
+parallel=TRUE))
+@
+
+Cumulative Probit model:
+<<eval=FALSE>>=
+cprobit <- vglm(R4 ~ Th + Sex + Age +Age2, family = cumulative (link="probit",
+parallel=TRUE))
+@
+
+Cumulative Gumbel model:
+<<eval=FALSE>>=
+cgumbel <- vglm(R4rev ~ Th + Sex + Age +Age2, family = cumulative(link="cloglog", 
+parallel=TRUE))
+@
+
+Cumulative Gompertz model:
+<<eval=FALSE>>=
+cgompertz <- vglm(R4 ~ Th + Sex + Age +Age2, family = cumulative(link="cloglog", 
+parallel=TRUE))
+@
+
+\bigskip
+
+Now the four deviances can be recalled by the following command:
+<<eval=FALSE>>=
+deviance(clogit)
+deviance(cprobit)
+deviance(cgumbel)
+deviance(cgompertz)
+@
+
+For comparison the four corresponding sequential models are fitted.
+
+\bigskip
+
+Sequential Logit model:
+<<eval=FALSE>>=
+slogit <- vglm(R4 ~ Th + Sex + Age +Age2, family = sratio (link="logit", 
+parallel=TRUE))
+@
+
+Sequential Probit model:
+<<eval=FALSE>>=
+sprobit <- vglm(R4 ~ Th + Sex + Age +Age2, family = sratio (link="probit", 
+parallel=TRUE))
+@
+
+Sequential Gumbel model:
+<<eval=FALSE>>=
+sgumbel <- vglm(R4rev ~ Th + Sex + Age +Age2, family = sratio (link="cloglog", 
+parallel=TRUE))
+@
+
+Sequential Gompertz model:
+<<eval=FALSE>>=
+sgompertz <- vglm(R4 ~ Th + Sex + Age +Age2, family = sratio (link="cloglog",
+parallel=TRUE))
+@
+
+Now the deviances of the sequential models are recalled:
+<<eval=FALSE>>=
+deviance(slogit)
+deviance(sprobit)
+deviance(sgumbel)
+deviance(sgompertz)
+@
+
+<<echo=FALSE,eval=FALSE>>=
+detach(package:VGAM)
+@
+\end{document}

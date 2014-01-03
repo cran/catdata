@@ -1,0 +1,97 @@
+% \VignetteIndexEntry{Party Preference - Star Plots}
+% \VignetteDepends{grDevices, nnet}
+
+\documentclass[a4paper]{article}
+
+\title{Party Preference - Star Plots}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+First the party preference data are built, then they are transformed to a data set that will be used for the multinomial response models. 
+The data include party preference, age in four categories and gender. 
+
+<<eval=FALSE>>=
+partypref <- matrix(data=c(114, 10, 53, 224,134,9,42,226,114,8,23,174,339,30,13,
+414,42,5,44,161,88,10,60,171,90,8,31,168, 413,23,14,375), nrow=8, byrow=TRUE)
+
+partydat<-data.frame(
+party=c(rep("CDU",sum(partypref[,1])),rep("SPD",sum(partypref[,4])),
+rep("The Liberals",sum(partypref[,2])),rep("The Greens",sum(partypref[,3]))),
+sex=c(rep(0,sum(partypref[1:4,1])),rep(1,sum(partypref[5:8,1])),
+rep(0,sum(partypref[1:4,4])),rep(1,sum(partypref[5:8,4])),
+rep(0,sum(partypref[1:4,2])),rep(1,sum(partypref[5:8,2])),
+rep(0,sum(partypref[1:4,3])),rep(1,sum(partypref[5:8,3]))),
+age=c(rep(c(1:4,1:4), partypref[,1]),rep(c(1:4,1:4), partypref[,4]),
+rep(c(1:4,1:4), partypref[,2]),rep(c(1:4,1:4), partypref[,3])))
+@
+
+Now  star plots are to be built. For every subgroup of male/female and old/young (categories "1" and "4") a star will be plotted.
+
+First the corresponding relative frequencies for the subgroups are computed. Then they are multiplied by a factor of 6 in order to obtain
+larger values for the plots.
+
+<<eval=FALSE>>=
+x1 <- partypref/rowSums(partypref)
+
+x1 <- x1[c(1,4,5,8),]
+
+x1 <- cbind(x1[,2],x1[,3],x1[,1],x1[,4])
+
+x1 <- x1*6
+@
+
+The locations for the plots are defined and the library "grDevices" is loaded. 
+
+<<eval=FALSE>>=
+loc1 <- matrix(data=c(0,0,15,0,0,15,15,15),ncol=2,byrow=T)
+library(grDevices)
+@
+
+Now the stars are plotted by the command "stars".
+
+<<fig=TRUE,eval=FALSE>>=
+stars(x1, scale=FALSE,key.loc = c(25,6),len=2,cex=1.2,lwd=1.2,
+xlim=c(-10,30),ylim=c(-5,10),key.labels=c("Liberals","Green","CDU","SPD"), 
+location=loc1, labels = c("male young","male old","female young","female old"))
+@
+
+In the following a star plot for the exponentials of a multinomial model is plotted. First the model is fitted with the command "multinom" from "nnet"--package.
+
+
+<<eval=FALSE>>=
+partydat$age <- as.factor(partydat$age)
+
+library(nnet)
+
+partymult <- multinom(party ~ sex + age , data=partydat)
+
+summary(partymult)
+@
+
+The exponentials of the model coefficients and the coefficients for the reference category "CDU" are used to build the matrix "x2" 
+of the values needed for the star plot. In addition the locations for the respective stars are defined.
+
+<<eval=FALSE>>=
+x2 <- matrix(data=c(rep(1,5),as.matrix(t(exp(coefficients(partymult))))),nrow=5)
+
+x2 <- cbind(x2[,4],x2[,3],x2[,1],x2[,2])
+
+loc2 <- matrix(data=c(0,9,9,9,0,0,9,0,18,0),ncol=2,byrow=T)
+@
+
+Finally the stars can be plotted. The options "key.loc" and "key.labels" set the coordinates and the labels for the unit key.
+
+<<fig=TRUE,eval=FALSE>>=
+stars(x2, scale=FALSE,key.loc = c(18,9),len=2,cex=1.2,lwd=1.2,
+xlim=c(-2,23),ylim=c(-3,10),key.labels=c("Liberals","Green","CDU","SPD"), 
+location=loc2, labels = c("reference","gender","age 2","age 3","age 4"))
+@
+
+\end{document}

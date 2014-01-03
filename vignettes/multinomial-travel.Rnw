@@ -1,0 +1,103 @@
+% \VignetteIndexEntry{Travel Mode - Multinomial Logit Model}
+% \VignetteDepends{mlogit, Ecdat}
+
+\documentclass[a4paper]{article}
+
+\title{Travel Mode - Multinomial Logit Model}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+For multinomial models that include category--specific as well as global effects the
+function "mlogit" from the library "mlogit" can be used.
+
+<<eval=FALSE>>=
+library(mlogit)
+@
+
+The  "Travel Mode"--data are stored in the "Edcat"--package and can be loaded by the following
+command.
+
+<<eval=FALSE>>=
+data(ModeChoice, package="Ecdat")
+@
+
+For the use of the function "mlogit"  an appropriate data set has to be built. This is done by  use of
+the function "mlogit.data". 
+
+<<eval=FALSE>>=
+travel.long <- mlogit.data(ModeChoice, choice="mode", shape="long", alt.levels=
+c("air","train","bus","car"))
+@
+
+Now  the model can be fitted. In the formula first the category--specific effects and then, 
+separated by "|", the global effects are specified.
+
+<<eval=FALSE>>=
+travel.kat.id <- mlogit(mode ~ invt + gc|hinc, data=travel.long)
+summary(travel.kat.id)
+@
+
+Now the same model is fitted with the package "VGAM".
+
+<<eval=FALSE>>=
+library(VGAM)
+@
+
+At first the data need to be prepared adequately to be ready for use with the function "vglm".
+
+<<eval=FALSE>>=
+travelmode <- matrix(ModeChoice$mode, byrow = T, ncol = 4)
+colnames(travelmode) <- c("air","train","bus","car")
+travelhinc <- matrix(ModeChoice$hinc, byrow = T, ncol = 4)
+travelhinc <- travelhinc[,1]
+travelinvt <- matrix(ModeChoice$invt, byrow = T, ncol = 4)
+colnames(travelinvt) <- c("invtair","invttrain","invtbus","invtcar")
+travelgc <- matrix(ModeChoice$gc, byrow = T, ncol = 4)
+colnames(travelgc) <- c("gcair","gctrain","gcbus","gccar")
+
+travelinvt <- sweep(travelinvt[,-1], 1, travelinvt[,1])
+travelgc <- sweep(travelgc[,-1], 1, travelgc[,1])
+
+
+Invt <- travelinvt[,1]
+Gc <- travelgc[,1]
+
+traveldat <- cbind(travelhinc, travelinvt, Invt, travelgc, Gc)
+traveldat <- as.data.frame(traveldat)
+@
+
+Now the model can be fitted.
+
+<<eval=FALSE>>=
+fit <- vglm(travelmode ~ Invt + Gc + travelhinc,
+            multinomial(parallel = FALSE ~ travelhinc, refLevel = 1),
+            xij = list(Invt ~ invttrain + invtbus + invtcar,
+                       Gc ~ gctrain + gcbus + gccar),
+            form2 = ~ Invt + invttrain + invtbus + invtcar +
+                      Gc + gctrain + gcbus + gccar + travelhinc,
+            data = traveldat, trace = TRUE)
+
+summary(fit)
+summary(travel.kat.id)
+@
+
+At last we compare the coefficients of the two fitted models.
+
+<<eval=FALSE>>=
+summary(travel.kat.id)$CoefTable
+summary(fit)@coef3
+@
+
+<<echo=FALSE,results=hide,eval=FALSE>>=
+detach(package:VGAM)
+detach(package:mlogit)
+@
+
+\end{document}

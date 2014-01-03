@@ -1,0 +1,68 @@
+% \VignetteIndexEntry{Birth Data - Bivariate Binary Regression}
+% \VignetteDepends{VGAM}
+
+\documentclass[a4paper]{article}
+
+\title{Birth Data - Bivariate Binary Regression}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+
+First the Birth data are loaded from package "catdata".
+
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(birth)
+attach(birth)
+@
+
+Now  the original variable "Intensive" is converted into the binary variable "Intensive" indicating 
+whether the child spent time in intensive care or not.
+
+<<eval=FALSE>>=
+intensive <- rep(0,length(Intensive))
+intensive[Intensive>0] <- 1
+Intensive <- intensive
+@
+
+Now "Previous" is reduced to 3 categories by merging two and more previous pregnancies to level "2".
+
+<<eval=FALSE>>=
+previous <- Previous
+previous[previous>1] <- 2 
+Previous <- previous
+@
+
+<<eval=FALSE>>=
+library(VGAM)
+@
+
+The data set "Birth" is built as data set containing the variables for the model but without  missing values.
+
+<<eval=FALSE>>=
+Birth <- as.data.frame(na.omit(cbind(Intensive, Cesarean, Sex, Weight, Previous, 
+AgeMother)))
+detach(birth)
+@
+
+With that data set the model can be fitted. The option "binom2.or" is needed to fit a bivariate binary model. 
+
+<<eval=FALSE>>=
+bivarlogit <- vglm(cbind(Intensive , Cesarean) ~ as.factor(Sex) + Weight + 
+as.factor(Previous) + AgeMother, binom2.or(zero=NULL), data=Birth)
+
+summary(bivarlogit)
+@
+
+<<echo=FALSE,eval=FALSE>>=
+detach(package:VGAM)
+@
+
+\end{document}

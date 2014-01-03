@@ -1,0 +1,50 @@
+% \VignetteIndexEntry{Exposure to Dust - Generalized Additive Models}
+% \VignetteDepends{mgcv}
+
+\documentclass[a4paper]{article}
+
+\title{Exposure to Dust - Generalized Additive Models}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+For GAMs the package "mgcv" is used.
+
+<<eval=FALSE>>=
+library(mgcv)
+library(catdata)
+data(dust)
+@
+
+The first model uses bivariate smoothing for the covariates "dust" and "years" from the "dust"--data. By the option "pers=TRUE" the
+bivariate effect can be plotted three--dimensional.
+
+<<fig=TRUE,eval=FALSE>>=
+gamdust1 <- gam(bronch ~ s(dust,years), family=binomial, 
+                data=dust[(dust$dust<10) & (dust$smoke==1),])
+
+plot(gamdust1, pers=TRUE)
+@
+
+Now each covariate is fitted separately, afterwards both effects are plotted.
+
+<<eval=FALSE>>=
+gamdust2<- gam(bronch ~ s(dust) + s(years), family=binomial, 
+               data=dust[(dust$dust<10) & (dust$smoke==1),])
+@
+<<fig=TRUE, width=8,eval=FALSE>>=
+plot(gamdust2, select=1)
+@
+
+<<fig=TRUE, width=8,eval=FALSE>>=
+plot(gamdust2, select=2)
+@
+
+
+\end{document}

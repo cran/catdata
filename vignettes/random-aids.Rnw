@@ -1,0 +1,62 @@
+% \VignetteIndexEntry{AIDS - Semiparametric Mixed Model}
+% \VignetteDepends{mgcv}
+
+\documentclass[a4paper]{article}
+
+\title{AIDS - Semiparametric Mixed Model}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+The "AIDS"--data from "catdata" are loaded.
+
+<<eval=FALSE>>=
+library(catdata)
+data(aids)
+@
+
+As for normal GAMs for GAMMs the package "mgcv" is used.
+
+<<eval=FALSE>>=
+library(mgcv)
+@
+
+The Semiparametric Mixed Model (or Generalized Additive Mixed Model) for "AIDS"--Data is fitted by the function "gamm". Here the only random effect is 
+the random intercept.
+
+<<eval=FALSE>>=
+gammaids<-gamm(cd4 ~ s(time) + drugs + partners + s(cesd) + s(age), 
+               random=list(person=~1),  family=poisson(link=log), data=aids)
+@
+
+The summary of the fixed effects is printed.
+
+<<eval=FALSE>>=
+summary(gammaids$gam)
+@
+
+Finally the three smooth effects from the gam are plotted.
+
+<<fig=TRUE, width=12, height=9,eval=FALSE>>=
+plot(gammaids$gam,ylab=" ",cex.lab=1.8,cex.axis=1.5,select=1)
+@
+
+<<fig=TRUE, width=12, height=9,eval=FALSE>>=
+plot(gammaids$gam,ylab=" ",cex.lab=1.8,cex.axis=1.5,select=2)
+@
+
+
+<<fig=TRUE, width=12, height=9,eval=FALSE>>=
+plot(gammaids$gam,ylab=" ",cex.lab=1.8,cex.axis=1.5,select=3)
+@
+<<echo=FALSE,results=hide,eval=FALSE>>=
+detach(package:mgcv)
+@
+
+\end{document}

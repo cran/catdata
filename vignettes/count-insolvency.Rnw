@@ -1,0 +1,48 @@
+% \VignetteIndexEntry{Insolvency - (Quasi-)Poisson Model and Negative Binomial Model}
+
+\documentclass[a4paper]{article}
+
+\title{Insolvency - (Quasi-)Poisson Model and Negative Binomial Model}
+
+\begin{document}
+
+\maketitle
+First the insolvency data are loaded:
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(insolvency)
+attach(insolvency)
+@
+%
+For the number of insolvent firms between 1994 and 1996 a Poisson model is fitted with time as predictor.
+Time is considered as a number from 1 to 36, denoting the month from January 1994 to December 1996.
+<<eval=FALSE>>=
+ins1 <- glm(insolv ~ case + I(case^2), family=poisson(link=log), data=insolvency)
+summary(ins1)
+# plot(ins1)
+@
+Scatter-Plot of number of insolvent firms dependent of the month (1-36). With estimated curve of the log-linear model.
+<<fig=TRUE,eval=FALSE>>=
+plot(case, insolv)
+points(ins1$fitted.values, type="l")
+@
+In many real-world datasets the variance of count-data is higher than predicted by the Poisson distribution.
+So next a Poisson model with disperison parameter is fitted (Quasi-Poisson model).
+<<eval=FALSE>>=
+ins2 <- glm(insolv ~ case + I(case^2), family=quasipoisson, data=insolvency)
+summary(ins2)
+# plot(ins2)
+@
+An alternative to a quasi-poisson model is to use the negative binomial distribution.
+<<eval=FALSE>>=
+library(MASS)
+ins3 <- glm.nb(insolv ~ case + I(case^2),data=insolvency)
+summary(ins3)
+@
+Since counts are rather large in addition a normal distribution model is fitted.
+<<eval=FALSE>>=
+ins4 <- glm(insolv ~ case + I(case^2), family=gaussian(link=log), data=insolvency)
+summary(ins4)
+@
+\end{document}
+

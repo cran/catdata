@@ -1,0 +1,148 @@
+% \VignetteIndexEntry{Addiction - Additive Multinomial Logit Models}
+% \VignetteDepends{mgcv}
+
+\documentclass[a4paper]{article}
+
+\title{Addiction - Additive Multinomial Logit Models}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+First the "Addiction"--Data from "catdata" are loaded and attached.
+
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(addiction)
+attach(addiction)
+@
+
+For the fitting of GAMs  the library "mgcv" is used.
+
+<<eval=FALSE>>=
+library(mgcv)
+@
+
+Now we create two data frames that will be used to predict the probabilities along the range of age, the columns are "age", "gender" and "university". We 
+create one data frame for women and one for men. 
+
+<<eval=FALSE>>=
+minage <- min(na.omit(age))
+maxage <- max(na.omit(age))
+ageindex <- seq(minage, maxage, 0.1)
+n <- length(ageindex)
+@
+
+<<eval=FALSE>>=
+gender1 <- rep(1, n)
+gender0 <- rep(0, n)
+university1 <- rep(1, n)
+university0 <- rep(0, n)
+
+datamale <- as.data.frame(cbind(gender=gender0,age=ageindex,university=university1))
+datafemale <- as.data.frame(cbind(gender=gender1,age=ageindex,
+                                  university=university1))
+@
+
+For the hierarchical model a new reponse "ill01" is created.
+
+<<eval=FALSE>>=
+ill01 <-ill
+ill01[ill==1] <- 0
+ill01[ill==2] <- 1
+@
+
+Now the two GAMs for the hierarchical model are fitted, "gam1" models category "0" and category "1" versus category "2", 
+"gam2" models category "0" versus category "1".
+
+<<eval=FALSE>>=
+gam1 <- gam(as.factor(ill01) ~ s(age) + gender + university, family=binomial())
+gam2 <- gam(as.factor(ill) ~ s(age) + gender + university, family=binomial(), 
+            data=addiction[addiction$ill!=2,])
+@
+
+Then the corresponding summaries are printed.
+
+<<eval=FALSE>>=
+summary(gam1)
+summary(gam2)
+@
+
+Now the smoothed effects for age are plotted.
+
+<<fig=TRUE, width=9,eval=FALSE>>=
+plot(gam1)
+@
+
+<<fig=TRUE,width=9,eval=FALSE>>=
+plot(gam2)
+@
+
+For predicting the probabilities for the respective categories the probabilities from both GAMs are needed.
+These can be computed by the "predict"--function. First we use the data frame for men for prediction.
+
+<<eval=FALSE>>=
+predmale1 <- predict(gam1, newdata=datamale, type="response")
+predmale2 <- predict(gam2, newdata=datamale, type="response")
+@
+
+<<eval=FALSE>>=
+predfemale1 <- predict(gam1, newdata=datafemale, type="response")
+predfemale2 <- predict(gam2, newdata=datafemale, type="response")
+@
+
+Then we compute the probabilities for each category, first for men, afterwards for women.
+
+<<eval=FALSE>>=
+p2 <- predmale1
+p1 <- predmale2 * (1-predmale1)
+p0 <- (1-predmale2) * (1-predmale1)
+@
+
+<<eval=FALSE>>=
+pf2 <- predfemale1
+pf1 <- predfemale2 * (1-predfemale1)
+pf0 <- (1-predfemale2) * (1-predfemale1)
+@
+
+Now finally the probabilities for the respective categories can be plotted.
+
+<<fig=TRUE,width=16, height=8.5,eval=FALSE>>=
+par(mfrow=c(1,2), cex=1.8)
+plot(ageindex, p0, type="l", lty=1, ylim=c(0,1), main="men with university degree",
+     ylab="probabilities")
+lines(ageindex, p1, lty="dotted")
+lines(ageindex, p2, lty="dashed")
+legend("topright", legend=c("Weak-willed", "diseased", "both"), 
+       lty=c("solid", "dotted", "dashed"))
+
+
+plot(ageindex, pf0, type="l", lty=1, ylim=c(0,1), 
+     main="women with university degree", ylab="probabilities")
+lines(ageindex, pf1, lty="dotted")
+lines(ageindex, pf2, lty="dashed")
+legend("topright", legend=c("Weak-willed", "diseased", "both"),
+       lty=c("solid", "dotted", "dashed"))
+@
+
+The models "gam3" and "gam4" compare category 0 versus 1 and category 0 versus 2 respectively. 
+
+<<eval=FALSE>>=
+gam3 <- gam(as.factor(ill)~ s(age) + gender + university, 
+            data=addiction[addiction$ill!=2,], family=binomial())
+gam4 <- gam(as.factor(ill)~ s(age) + gender + university, 
+            data=addiction[addiction$ill!=1,], family=binomial())
+@
+
+
+<<eval=FALSE>>=
+summary(gam3)
+summary(gam4)
+@
+
+\end{document}

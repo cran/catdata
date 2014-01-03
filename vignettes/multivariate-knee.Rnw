@@ -1,0 +1,199 @@
+% \VignetteIndexEntry{Knee Injuries - Marginal Models}
+% \VignetteDepends{gee, geepack}
+
+\documentclass[a4paper]{article}
+
+\title{Knee Injuries - Marginal Models}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+First the dataset knee is loaded:
+
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(knee)
+attach(knee)
+@
+
+
+To obtain  a simple binary model the response variables are dichotomized. The groups are constructed by
+pain level up to level 2 und pain level higher than level 2.
+
+<<eval=FALSE>>=
+R2D <- rep(0, length(R2))
+R3D <- rep(0, length(R3))
+R4D <- rep(0, length(R3))
+
+R2D[R2>2] <- 1
+R3D[R3>2] <- 1
+R4D[R4>2] <- 1
+@
+
+Now the covariates have to be transformed  so that they can be used for the functions "gee" from the
+"gee"--library and "geeglm" from the "geepack"--library, which will be employed for fitting the models.
+
+<<eval=FALSE>>=
+N <- rep(knee$N, each=3)
+Th <- rep(knee$Th, each=3)
+Age <- rep(knee$Age, each=3)
+Sex <- rep(knee$Sex, each=3)
+@
+
+Now the response vector is built and the quadratic age--effect "Age2" is computed.
+
+<<eval=FALSE>>=
+Response <- c(rbind(R2D,R3D,R4D))
+Age2 <- Age^2
+@
+
+The covariates therapy and sex are treated as factors:
+
+<<eval=FALSE>>=
+Th <- as.factor(Th)
+Sex <- as.factor(Sex)
+@
+
+First the GEEs are fitted with the funtion "gee" from library "gee".
+
+<<eval=FALSE>>=
+library(gee)
+@
+
+The first model is a GEE with independent correlation structure:
+
+<<results=hide,eval=FALSE>>=
+gee1a <- gee(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit))
+@
+
+<<eval=FALSE>>=
+summary(gee1a)
+@
+
+The second model is a GEE with exchangeable correlation structure:
+
+<<results=hide,eval=FALSE>>=
+gee2a <- gee(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit), corstr="exchangeable")
+@
+
+<<eval=FALSE>>=
+summary(gee2a)
+@
+
+Finally a GEE with exponential correlation structure is fitted:
+
+<<results=hide,eval=FALSE>>=
+gee3a <- gee(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit), corstr="AR-M", Mv=1)
+@
+
+<<eval=FALSE>>=
+summary(gee3a)
+@
+
+
+In the following the corresponding marginal models are fitted with the function "geeglm" from the library "geepack".
+
+<<eval=FALSE>>=
+library(geepack)
+@
+
+Model with independent correlation structure:
+
+<<results=hide,eval=FALSE>>=
+gee1b <- geeglm(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit))
+@
+
+<<eval=FALSE>>=
+summary(gee1b)
+@
+
+Model with exchangeable correlation structure:
+
+<<results=hide,eval=FALSE>>=
+gee2b <- geeglm(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit), corstr="exchangeable")
+@
+
+<<eval=FALSE>>=
+summary(gee2b)
+@
+
+Model with exponential correlation structure:
+
+<<results=hide,eval=FALSE>>=
+gee3b <- geeglm(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit), corstr="ar1")
+@
+
+<<eval=FALSE>>=
+summary(gee3b)
+@
+
+\bigskip
+
+For comparison a simple GLM with logit--link is fitted with the same covariates as in the marginal models above:
+
+<<eval=FALSE>>=
+glm1 <- glm(Response ~ Th + Sex + Age + Age2,
+family=binomial(link=logit))
+summary(glm1)
+@
+
+It is often advatageous to center the  variables like age around a value in the middle of its range. So 
+now the marginal models from above are replicated with  age  centered around 30 years. 
+
+<<eval=FALSE>>=
+Age <- Age-30
+Age2 <- Age^2
+@
+
+Again we use the function "gee" from the "gee"--library for fitting those models.
+
+\bigskip
+
+Model with independent correlation structure and centered age:
+
+<<results=hide,eval=FALSE>>=
+gee1c <- gee(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit))
+@
+
+<<eval=FALSE>>=
+summary(gee1c)
+@
+
+Model with exchangeable correlation structure and centered age:
+
+<<results=hide,eval=FALSE>>=
+gee2c <- gee(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit), corstr="exchangeable")
+@
+
+<<eval=FALSE>>=
+summary(gee2c)
+@
+
+Model with exponential correlation structure and centered age:
+
+<<results=hide,eval=FALSE>>=
+gee3c <- gee(Response ~ Th + Sex + Age + Age2, id=N,
+family=binomial(link=logit), corstr="AR-M", Mv=1)
+@
+
+<<eval=FALSE>>=
+summary(gee3c)
+@
+
+
+
+\end{document}

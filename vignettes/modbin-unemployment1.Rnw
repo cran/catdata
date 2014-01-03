@@ -1,0 +1,58 @@
+% \VignetteIndexEntry{Duration of Unemployment - Logit Model}
+% \VignetteDepends{}
+
+\documentclass[a4paper]{article}
+
+\title{Duration of Unemployment - Logit Model}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=60)
+@
+
+At first the "unemployment" data from the "catdata" package are loaded and attached.
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(unemployment)
+attach(unemployment)
+@
+
+
+Now a frequency table is created and used to fit a Logit model based on grouped data.
+<<eval=FALSE>>=
+durbin <- as.factor(durbin)
+table.durbin <- ftable(subset(unemployment, select=c("age", "durbin")), 
+col.vars="durbin")
+rels<-table.durbin[,1]/rowSums(table.durbin)
+age.new <- min(age):max(age)
+
+model1 <- glm(table.durbin ~ age.new, family=binomial)
+summary(model1)
+@
+
+Here the observed frequencies are plotted against the fitted probabilities.
+
+<<fig=TRUE,eval=FALSE>>=
+plot(age.new, model1$fitted.values, xlab="Age", ylab="Observed/Fitted values", 
+type="l", ylim=c(0,1))
+points(age.new,table.durbin[,1]/rowSums(table.durbin))
+@
+
+The standardized deviance residuals are plotted against the predicted values and a quantile plot is created.
+
+<<fig=TRUE,eval=FALSE>>=
+plot(model1$fitted.values,sqrt(rowSums(table.durbin))*rstandard(model1), 
+xlab="Predicted values", ylab="Residuals")
+@
+<<fig=TRUE,eval=FALSE>>=
+qqnorm(sqrt(rowSums(table.durbin))*rstandard(model1), main="", 
+       ylab="Standardized deviance residuals")
+qqline(sqrt(rowSums(table.durbin))*rstandard(model1), lwd=2.5, 
+       lty="dashed", col="red")
+@
+
+\end{document}

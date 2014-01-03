@@ -1,0 +1,32 @@
+% \VignetteIndexEntry{Vaso Constriction - Logistic Regression}
+
+\documentclass[a4paper]{article}
+
+\title{Vaso Constriction - Logistic Regression}
+
+\begin{document}
+
+\maketitle
+First the dataset vaso is loaded.
+<<results=hide,eval=FALSE>>=
+library(catdata)
+data(vaso)
+attach(vaso)
+@
+For the fitting of a logit model, the response is 0-1 coded. (data set contains 1 2).
+Moreover, the covariates vol and rate are log-transformed.
+<<eval=FALSE>>=
+y <- vaso$vaso
+y[vaso$vaso==2] <- 0
+@
+Fit of a logit-model with log-transformed covariates.
+<<eval=FALSE>>=
+vaso1 <- glm(y ~ vol + rate, family=binomial)
+summary(vaso1)
+@
+Next,  a logit-model with original covariates is fitted.
+<<eval=FALSE>>=
+vaso2 <- glm(y ~ I(exp(vol)) + I(exp(rate)), family=binomial)
+summary(vaso2)
+@
+\end{document}

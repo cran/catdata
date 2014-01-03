@@ -1,0 +1,42 @@
+% \VignetteIndexEntry{Leukoplakia - Mosaic Plots}
+% \VignetteDepends{vcdExtra}
+
+\documentclass[a4paper]{article}
+
+\title{Leukoplakia - Mosaic Plots}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=60)
+@
+
+The leukoplakia data can be expanded by the command "expand.dft".
+
+<<eval=FALSE>>=
+library(catdata)
+data(leukoplakia)
+library(vcdExtra)
+leukoplakia<-expand.dft(leukoplakia,freq="Freq")
+@
+
+Mosaic plots are created by "mosaicplot".
+
+<<fig=TRUE,eval=FALSE>>=
+mosaicplot(~ Leukoplakia+Smoker+Alcohol,main ="", data = leukoplakia, 
+           color = TRUE, cex.axis=1.0)
+@
+
+<<fig=TRUE,eval=FALSE>>=
+mosaicplot(~ Leukoplakia+Smoker,main ="", data = leukoplakia, color = TRUE, 
+           cex.axis=1.0)
+@
+
+<<echo=FALSE,eval=FALSE>>=
+detach(package:vcdExtra)
+detach(package:gnm)
+@
+\end{document}

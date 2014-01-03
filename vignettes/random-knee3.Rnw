@@ -1,0 +1,85 @@
+% \VignetteIndexEntry{Knee Data - Discrete Mixture Model}
+% \VignetteDepends{flexmix}
+
+\documentclass[a4paper]{article}
+
+\title{Knee Data - Discrete Mixture Model}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+The "knee"--data from "catdata" are loaded.
+
+<<eval=FALSE>>=
+library(catdata)
+data(knee)
+@
+
+The data set contains longitudinal data and is currently in the "wide" format,  now it is transformed into the  "long" format by the function "reshape". 
+
+In addition the response is dichotomized, "age" is centered around 30 and a quadratic effect "age2" of age is created.
+
+<<eval=FALSE>>=
+knee <- reshape(knee, direction="long", varying=list(5:8), v.names="R",
+                timevar="Time")
+
+knee$RD <- rep(0, length(knee$R))
+knee$RD[knee$R>2] <- 1
+
+knee$Age <- knee$Age - 30
+knee$Age2<-knee$Age^2
+@
+
+The covariates "Th" and "Sex" are factorized.
+
+<<eval=FALSE>>=
+knee$Th <- as.factor(knee$Th)
+knee$Sex <- as.factor(knee$Sex)
+@
+
+For discrete mixture models  the library "flexmix" is used.
+
+<<eval=FALSE>>=
+library(flexmix)
+@
+
+Now some discrete mixture models are fitted, each with another number of components. Every model fits fixed effects for the covariates "Th", "Sex", "Age" and 
+"Age2" while the intercepts vary across components. 
+
+<<eval=FALSE>>=
+kneeflex2 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = 
+  "binomial", fixed= ~ Th + Sex + Age + Age2), k = 2, nrep = 5, data = knee)
+
+kneeflex3 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = 
+  "binomial", fixed= ~ Th + Sex + Age + Age2), k = 3, nrep = 5, data = knee)
+
+kneeflex4 <-stepFlexmix(cbind(RD,1-RD) ~ 1 | N,	model = FLXMRglmfix(family = 
+  "binomial", fixed= ~ Th + Sex + Age + Age2), k = 4, nrep = 5, data = knee)
+@
+
+We compare the fitted models by BIC.
+
+
+<<eval=FALSE>>=
+summary(kneeflex2)@BIC
+summary(kneeflex3)@BIC
+summary(kneeflex4)@BIC
+@
+
+As the model with two components has the lowest BIC, the coefficients of that model are printed.
+
+<<eval=FALSE>>=
+summary(refit(kneeflex2))
+@
+
+<<echo=FALSE,eval=FALSE>>=
+detach(package:flexmix)
+@
+
+\end{document}

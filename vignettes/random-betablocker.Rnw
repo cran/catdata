@@ -1,0 +1,137 @@
+% \VignetteIndexEntry{Beta-blockers - Discrete Mixture Models}
+% \VignetteDepends{flexmix}
+
+\documentclass[a4paper]{article}
+
+\title{Beta-blockers - Discrete Mixture Models}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+The data set "betablockers" is loaded from the package "flexmix".
+
+<<eval=FALSE>>=
+library(flexmix)
+data(betablocker)
+@
+
+<<eval=FALSE>>=
+betablocker$Treatment <- as.factor(betablocker$Treatment)
+@
+
+First a simple logit model is fitted with the only covariate "Treatment".
+
+<<eval=FALSE>>=
+GlmT <- glm(cbind(Deaths, Total	- Deaths) ~ Treatment, family = "binomial", 
+data = betablocker)
+summary(GlmT)
+@
+
+Now the logit model  is extended by the factor "Center" which has 22 different values. The deviance reduces from 305.76
+with 42 degrees of freedom to 23.62 with 21 degrees of freedom.
+
+<<eval=FALSE>>=
+GlmTC <- glm(cbind(Deaths, Total - Deaths) ~ Treatment + as.factor(Center), 
+             family 	= "binomial", data = betablocker)
+summary(GlmTC)
+@
+
+In the following two mixed models are fitted with Gauss--Hermite--Quadrature, so "glmmML" is needed.
+
+<<eval=FALSE>>=
+library(glmmML)
+@
+
+First the random intercept model with 4 quadrature points is fitted.
+
+<<eval=FALSE>>=
+MixedGH4 <- glmmML(cbind(Deaths, Total - Deaths) ~ Treatment, cluster=Center, 
+                   method = c("ghq"), n.points = 4, boot = 0, data=betablocker)
+
+summary(MixedGH4)
+@
+
+Now we use 20 quadrature points but there is no big difference in coefficients.
+
+<<eval=FALSE>>=
+MixedGH20 <- glmmML(cbind(Deaths, Total - Deaths) ~ Treatment, cluster=Center, 
+                    method = c("ghq"), n.points = 20, boot = 0, data=betablocker)
+
+summary(MixedGH20)
+@
+
+<<eval=FALSE>>=
+set.seed(5)
+@
+
+Finally we fit the discrete mixture models for which the function "stepFlexmix" is used. 
+Here we use three components  defined by option "k=3".  
+
+<<results=hide,eval=FALSE>>=
+detach(package:glmmML)
+@
+
+<<eval=FALSE>>=
+MixFix3 <-stepFlexmix(cbind(Deaths, Total - Deaths) ~ 1 | Center,	model = 
+  FLXMRglmfix(family = "binomial", fixed = ~ Treatment), k = 3, nrep = 5, 
+                      data = betablocker)
+@
+
+Typing the name of the fitted model yields the sizes of the three clusters.
+
+<<eval=FALSE>>=
+MixFix3
+@
+
+The coefficients are printed by the command "parameters()".
+
+<<eval=FALSE>>=
+parameters(MixFix3)
+@
+
+The command "summary()" returns for example the estimated component weights and the BIC. The coefficients with standard errors and p--values can be found by "summary(refit())".
+
+<<results=hide,eval=FALSE>>=
+library(flexmix)
+@
+
+<<eval=FALSE>>=
+summary(MixFix3)
+summary(refit(MixFix3))
+@
+
+<<eval=FALSE>>=
+set.seed(5)
+@
+
+Finally the discrete mixture model with 4 components is fitted.
+
+<<eval=FALSE>>=
+MixFix4 <-stepFlexmix(cbind(Deaths, Total - Deaths) ~ 1 | Center, model = 
+  FLXMRglmfix(family = "binomial", fixed = ~ Treatment), k = 4, nrep = 5, 
+                      data = betablocker)
+@
+
+<<eval=FALSE>>=
+MixFix4
+@
+
+<<eval=FALSE>>=
+parameters(MixFix4)
+@
+
+<<eval=FALSE>>=
+summary(MixFix4)
+summary(refit(MixFix4))
+@
+<<echo=FALSE,results=hide,eval=FALSE>>=
+detach(package:flexmix)
+@
+
+\end{document}

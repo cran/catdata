@@ -1,0 +1,52 @@
+% \VignetteIndexEntry{Number of Children - Partially Additive Model}
+% \VignetteDepends{mgcv}
+
+\documentclass[a4paper]{article}
+
+\title{Number of Children - Partially Additive Model}
+
+\begin{document}
+
+\maketitle
+
+
+<<echo=FALSE,eval=FALSE>>=
+options(width=80)
+@
+
+For the following partially additive model  the "children"--data from the package "catdata" are used. 
+
+<<eval=FALSE>>=
+library(catdata)
+data(children)
+@
+
+Additive Models are  fitted with the function "gam" from "mgcv".
+
+<<eval=FALSE>>=
+library(mgcv)
+@
+
+Here the model is fitted and the summary is printed.
+
+<<eval=FALSE>>=
+gamchild <- gam(child ~ s(age) + s(dur) + as.factor(nation) + as.factor(god) + 
+  as.factor(univ), data=children, family=poisson(link=log))
+
+summary(gamchild)
+@
+
+Now the smooth effects can be plotted, the option "select" determines which effect is plotted.
+
+<<fig=TRUE, width=9,eval=FALSE>>=
+par(cex=1.5)
+plot(gamchild, select=1, ylab="", xlab="Age")
+@
+
+<<fig=TRUE, width=9,eval=FALSE>>=
+par(cex=1.5)
+plot(gamchild, select=2, ylab="", xlab="Duration")
+@
+
+
+\end{document}
