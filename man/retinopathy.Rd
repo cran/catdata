@@ -25,8 +25,10 @@ Bender and  Grouven (1998),
 }
 
 \examples{
-##example of analysis:
+ \dontrun{
+## look for
 vignette("ordinal-retinopathy1")
 vignette("ordinal-retinopathy2")
+ }
 }
 \keyword{datasets}
