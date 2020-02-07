@@ -6,18 +6,19 @@
 \title{Retinopathy - Testing Proportional Odds Assumption}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \maketitle
 
-<<echo=FALSE,eval=FALSE>>=
-options(width=80)
+<<echo=FALSE>>=
+options(width=60)
 rm(list=ls(all=TRUE))
 @
 
-<<results=hide,eval=FALSE>>=
+<<results=hide>>=
 library(catdata)
 data(retinopathy)
-attach(retinopathy)
+retinopathy$SM <- as.factor(retinopathy$SM)
 @
 
 For the fitting of the partial proportional odds models the function "vglm" from the "VGAM"--package is used. First a simple
@@ -25,36 +26,38 @@ proportional odds model is fitted with "vglm".
 
 For the "vglm"--function the response (RET) does not necessarily have to be ordered, SM has to be factorized.
 
-<<eval=FALSE>>=
+<<>>=
 library(VGAM)
-RET <- as.ordered(RET)
-SM <- as.factor(SM)
+# retinopathy$RET <- as.ordered(retinopathy$RET)
+# retinopathy$SM <- as.factor(retinopathy$SM)
 @
 
 
 The models differ in the option "parallel" for the used family "cumulative". 
 
-<<results=hide,eval=FALSE>>=
-pom <- vglm(RET ~ SM + DIAB + GH + BP, family = cumulative (parallel=TRUE))
+<<results=hide>>=
+pom <- vglm(RET ~ SM + DIAB + GH + BP, family = cumulative(parallel=TRUE), 
+            data = retinopathy)
 @
 
-<<results=hide,eval=FALSE>>=
-ppom <- vglm(RET ~ SM + DIAB + GH + BP, family = cumulative (parallel=FALSE))
+<<results=hide>>=
+ppom <- vglm(RET ~ SM + DIAB + GH + BP, family = cumulative(parallel=FALSE), 
+             data = retinopathy)
 @
 
 First the proportional odds assumption is tested. The deviances of the two models can be received by the following command.
 
-<<eval=FALSE>>=
+<<>>=
 deviance(pom)
 @
 
-<<eval=FALSE>>=
+<<>>=
 deviance(ppom)
 @
 
 The p--value for the proportional odds assuption is computed:
 
-<<eval=FALSE>>=
+<<>>=
 1 - pchisq(deviance(pom) - deviance(ppom), df=4)
 @
 
@@ -62,13 +65,13 @@ Coefficients and standard errors of both models are obtainen in the correspondin
 \bigskip
 
 Summary proportional odds model:
-<<eval=FALSE>>=
+<<>>=
 summary(pom)
 @
 
 \bigskip
 Summary partial proportional odds model:
-<<eval=FALSE>>=
+<<>>=
 summary(ppom)
 @
 
@@ -80,48 +83,45 @@ Afterwards the corresponding proportional odds assumptions are tested.
 \bigskip
  
 Global effect for BP:
-<<eval=FALSE>>=
+<<>>=
 ppom2 <- vglm (RET ~ SM + DIAB + GH + BP,
-family = cumulative (parallel = FALSE ~ SM + DIAB + GH))
+family = cumulative (parallel = FALSE ~ SM + DIAB + GH), data = retinopathy)
 deviance(ppom2)
 @
 
-<<eval=FALSE>>=
+<<>>=
 1-pchisq(deviance(ppom2)-deviance(ppom), df=1)
 @
 
 
 Global effect for GH:
-<<eval=FALSE>>=
+<<>>=
 ppom3 <- vglm (RET ~ SM + DIAB + GH + BP, 
-family = cumulative (parallel = FALSE ~ SM + DIAB))
+family = cumulative (parallel = FALSE ~ SM + DIAB), data = retinopathy)
 deviance(ppom3)
 @
 
-<<eval=FALSE>>=
+<<>>=
 1-pchisq(deviance(ppom3)-deviance(ppom2), df=1)
 @
 
 Global effect for DIAB:
-<<eval=FALSE>>=
+<<>>=
 ppom4 <- vglm (RET ~ SM + DIAB + GH + BP, 
-family = cumulative (parallel = FALSE ~ SM))
+family = cumulative (parallel = FALSE ~ SM), data = retinopathy)
 deviance(ppom4)
 @
 
-<<eval=FALSE>>=
+<<>>=
 1-pchisq(deviance(ppom4)-deviance(ppom3), df=1)
 @
 
 Global effect for SM (equivalent to proportional odds model):
-<<eval=FALSE>>=
+<<>>=
 1-pchisq(deviance(pom)-deviance(ppom4), df=1)
 @
 
-<<eval=FALSE>>=
-detach(retinopathy)
-@
-<<echo=FALSE,eval=FALSE>>=
+<<echo=FALSE>>=
 detach(package:VGAM)
 @
 \end{document}

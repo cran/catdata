@@ -26,7 +26,7 @@
   }
 }
 \source{
-\url{http://www.stat.uni-muenchen.de/service/datenarchiv/miete/miete03.html}
+Data Archive Department of Statistics, LMU Munich
 }
 \references{
 Fahrmeir, L., Künstler, R., Pigeot, I., Tutz, G. (2004) \emph{Statistik: der Weg zur Datenanalyse}. 

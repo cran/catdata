@@ -17,7 +17,7 @@
   }
 }
 \source{
-\url{http://www.stat.uni-muenchen.de/service/datenarchiv/dust/dust.html}
+Data Archive Department of Statistics, LMU Munich
 }
 \examples{
 \dontrun{

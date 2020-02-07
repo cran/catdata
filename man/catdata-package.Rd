@@ -9,7 +9,7 @@ Categorical Data
 \description{
 This R-package contains examples from the book
 
-\bold{Tutz (2011): Regression for Categorical Data, Cambridge University Press} 
+\bold{Tutz (2012): Regression for Categorical Data, Cambridge University Press} 
 
 The names of the examples refer to the chapter and the data set that is used. 
 
@@ -44,7 +44,7 @@ binary \tab Chapter 2 \tab Binary Regression: The Logit Model\cr
 glm \tab Chapter 3 \tab Generalized Linear Models\cr
 modbin \tab Chapter 4 \tab Modeling of Binary Data\cr
 altbin \tab Chapter 5 \tab Alternative Binary Regression Models\cr
-regsel \tab Chapter 6 \tab Regularization and Variable Selection for Parametric Models\cr
+regsel \tab Chapter 6 \tab Regularization and Variable Selection for Parametric Models (vignettes were removed)\cr
 count \tab Chapter 7 \tab Regression Analysis of Count Data\cr
 multinomial \tab Chapter 8 \tab Multinomial Response Models\cr
 ordinal \tab Chapter 9 \tab Ordinal Response Models\cr
@@ -79,15 +79,6 @@ refers to Chapter 4 (Modeling of Binary Data) and the data set dust.
 \itemize{
 \item altbin-teratology: Example 5.1
 }
-\item Chapter 6:
-\itemize{
-\item regsel-heartdisease1: Example 6.1, Example 6.2
-\item regsel-heartdisease2: Example 6.3
-\item regsel-heartdisease3
-\item regsel-heartdisease4: Example 6.4
-\item regsel-heartdisease5: Example 6.5
-\item regsel-heartdisease6
-}
 \item Chapter 7:
 \itemize{
 \item count-children: Example 7.3
@@ -108,7 +99,7 @@ refers to Chapter 4 (Modeling of Binary Data) and the data set dust.
 \item ordinal-knee1: Example 9.3
 \item ordinal-knee2: Example 9.4
 \item ordinal-retinopathy1: Example 9.5
-\item ordinal-retinopathy2: Example 9.6
+\item ordinal-retinopathy2: Example 9.6 
 \item ordinal-arthritis: Example 9.8
 }
 \item Chapter 10:
@@ -144,7 +135,7 @@ refers to Chapter 4 (Modeling of Binary Data) and the data set dust.
 }
 \item Chapter 15:
 \itemize{
-\item prediction-glass: Example 15.4
+\item prediction-glass: Example 15.4 (vignette was removed)
 \item prediction-medcare: Example 15.8
 }
 }
@@ -153,11 +144,11 @@ refers to Chapter 4 (Modeling of Binary Data) and the data set dust.
 Gerhard Tutz and Gunther Schauberger with contributions from Sarah Maierhofer and Marcus Groß
 
 Maintainer: \cr
-Gunther Schauberger <gunther.schauberger@stat.uni-muenchen.de> \cr
+Gunther Schauberger <gunther.schauberger@tum.de> \cr
 Gerhard Tutz <gerhard.tutz@stat.uni-muenchen.de>
 }
 
-\references{Gerhard Tutz (2011),
+\references{Gerhard Tutz (2012),
 \emph{Regression for Categorical Data},
 Cambridge University Press
 }

@@ -16,8 +16,7 @@ The \code{addiction} data stems from a survey comprising 712 respondents.
     \item{\code{university}}{surveyed person is academician(1) or not(0)}
   }
 }
-\source{ \url{http://www.stat.uni-muenchen.de/service/datenarchiv/sucht/sucht.html}
-  }
+\source{Data Archive Department of Statistics, LMU Munich}
 \examples{
 \dontrun{
 ##look for:

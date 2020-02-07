@@ -21,7 +21,7 @@
 }
 
 \source{
-\url{http://www.stat.uni-muenchen.de/service/datenarchiv/vaso/vaso.html}
+Data Archive Department of Statistics, LMU Munich
 }
 \references{
   Finney, D. J. (1971) \emph{Probit Analysis}. 3rd edition. Cambridge University Press.

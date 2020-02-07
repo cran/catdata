@@ -24,7 +24,7 @@
   }
 }
 \source{
-\url{http://www.econ.queensu.ca/jae/1997-v12.3/deb-trivedi/}
+\url{http://www.econ.queensu.ca}
 }
 \references{
   US National Medical Expenditure Survey in 1987/88
