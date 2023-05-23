@@ -20,9 +20,9 @@ The \code{addiction} data stems from a survey comprising 712 respondents.
 \examples{
 \dontrun{
 ##look for:
-vignette("semiparametric-addiction")
-vignette("multinomial-addiction1")
-vignette("multinomial-addiction2")
+if(interactive()){vignette("semiparametric-addiction")}
+if(interactive()){vignette("multinomial-addiction1")}
+if(interactive()){vignette("multinomial-addiction2")}
 
 }
 }

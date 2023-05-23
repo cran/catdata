@@ -33,7 +33,7 @@ Data Archive Department of Statistics, LMU Munich
 \examples{
 \dontrun{
 ##look for:
-vignette("binary-vaso")
+if(interactive()){vignette("binary-vaso")}
 }
 }
 \keyword{datasets}

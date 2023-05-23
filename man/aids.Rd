@@ -27,7 +27,7 @@ The \code{aids} data was a survey around 369 men who were infected with HIV.
 \examples{
 \dontrun{
 ##look for:
-vignette("random-aids")
+if(interactive()){vignette("random-aids")}
 }
 }
 \keyword{datasets}

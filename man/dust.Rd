@@ -22,9 +22,9 @@ Data Archive Department of Statistics, LMU Munich
 \examples{
 \dontrun{
 ##example of analysis:
-vignette("modbin-dust")
-vignette("semiparametric-dust")
-vignette("tree-dust")
+if(interactive()){vignette("modbin-dust")}
+if(interactive()){vignette("semiparametric-dust")}
+if(interactive()){vignette("tree-dust")}
 }
 }
 \keyword{datasets}

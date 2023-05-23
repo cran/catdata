@@ -19,7 +19,7 @@
 \examples{
 \dontrun{
 ##example of analysis:
-vignette("count-insolvency")
+if(interactive()){vignette("count-insolvency")}
 }
 }
 \keyword{datasets}

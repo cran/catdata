@@ -26,7 +26,7 @@ Journal of American Statistical Association \bold{84}, 460--466.
 \examples{
 \dontrun{
 ##look for:
-vignette("modbin-foodstamp")
+if(interactive()){vignette("modbin-foodstamp")}
 }
 }
 \keyword{datasets}

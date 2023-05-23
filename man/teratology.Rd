@@ -25,7 +25,7 @@ methods for extra-binomial and extra-poisson variation. Biometrics \bold{47}, 38
 data(teratology)
 summary(teratology)
 \dontrun{
-#vignette("altbin-teratology")
+if(interactive()){vignette("altbin-teratology")}
 }
 }
 \keyword{datasets}

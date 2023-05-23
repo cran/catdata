@@ -18,11 +18,11 @@ The \code{unemployment} data contains information on 982 unemployed persons.
 \examples{
 \dontrun{
 ##look for:
-vignette("binary-unemployment")
-vignette("modbin-unemployment1")
-vignette("modbin-unemployment2")
-vignette("semiparametric-unemployment")
-vignette("tree-unemployment")
+if(interactive()){vignette("binary-unemployment")}
+if(interactive()){vignette("modbin-unemployment1")}
+if(interactive()){vignette("modbin-unemployment2")}
+if(interactive()){vignette("semiparametric-unemployment")}
+if(interactive()){vignette("tree-unemployment")}
 }
 }
 \keyword{datasets}

@@ -29,7 +29,7 @@ Ripley, B. D. (1996), Pattern Recognition and Neural Networks, Cambridge Univers
 \examples{
 \dontrun{
 ##example of analysis:
-vignette("prediction-glass")
+if(interactive()){vignette("prediction-glass")}
 }
 }
 \keyword{datasets}

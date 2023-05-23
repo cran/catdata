@@ -26,8 +26,8 @@
 \examples{
 \dontrun{
 ##example of analysis:
-vignette("count-children")
-vignette("semiparametric-children")
+if(interactive()){vignette("count-children")}
+if(interactive()){vignette("semiparametric-children")}
 }
 }
 \keyword{datasets}

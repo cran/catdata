@@ -49,9 +49,9 @@
 \examples{
 \dontrun{
 ##look for:
-vignette("loglinear-birth")
-vignette("multivariate-birth1")
-vignette("multivariate-birth2")
+if(interactive()){vignette("loglinear-birth")}
+if(interactive()){vignette("multivariate-birth1")}
+if(interactive()){vignette("multivariate-birth2")}
 }
 }
 \keyword{datasets}

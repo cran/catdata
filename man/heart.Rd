@@ -28,11 +28,11 @@ Hastie, T., Tibshirani, R., and Friedman, J. (2001):\cr
 Elements of Statistical Learning; Data Mining, Inference, and Prediction, Springer-Verlag, New York}
 \examples{
 ##example of analysis:
-vignette("regsel-heartdisease1")
-vignette("regsel-heartdisease2")
-vignette("regsel-heartdisease3")
-vignette("regsel-heartdisease4")
-vignette("regsel-heartdisease5")
-vignette("regsel-heartdisease6")
+if(interactive()){vignette("regsel-heartdisease1")}
+if(interactive()){vignette("regsel-heartdisease2")}
+if(interactive()){vignette("regsel-heartdisease3")}
+if(interactive()){vignette("regsel-heartdisease4")}
+if(interactive()){vignette("regsel-heartdisease5")}
+if(interactive()){vignette("regsel-heartdisease6")}
 }
 \keyword{datasets}

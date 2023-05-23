@@ -158,6 +158,6 @@ package
 }
 \examples{
 \dontrun{
-vignette("modbin-dust")
+if(interactive()){vignette("modbin-dust")}
 }
 }

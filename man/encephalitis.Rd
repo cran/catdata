@@ -23,7 +23,7 @@ It was observed in Bavaria and Lower Saxony  between 1980 and 1993.
 \examples{
 \dontrun{
 ##look for:
-vignette("count-encephalitis")
+if(interactive()){vignette("count-encephalitis")}
 }
 }
 \keyword{datasets}

@@ -27,8 +27,8 @@ Bender and  Grouven (1998),
 \examples{
  \dontrun{
 ## look for
-vignette("ordinal-retinopathy1")
-vignette("ordinal-retinopathy2")
+if(interactive()){vignette("ordinal-retinopathy1")}
+if(interactive()){vignette("ordinal-retinopathy2")}
  }
 }
 \keyword{datasets}

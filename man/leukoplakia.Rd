@@ -25,7 +25,7 @@ The \code{leukoplakia} data is about occurence of oral leukoplakia with covariat
 \examples{
 \dontrun{
 ##look for:
-vignette("loglinear-leukoplakia")
+if(interactive()){vignette("loglinear-leukoplakia")}
 }
 }
 \keyword{datasets}

@@ -24,7 +24,7 @@
   }
 }
 \source{
-\url{http://www.econ.queensu.ca}
+\url{https://www.econ.queensu.ca}
 }
 \references{
   US National Medical Expenditure Survey in 1987/88
@@ -32,8 +32,8 @@
 \examples{
 \dontrun{
 ##example of analysis:
-vignette("count-medcare")
-vignette("prediction-medcare")
+if(interactive()){vignette("count-medcare")}
+if(interactive()){vignette("prediction-medcare")}
 }
 }
 \keyword{datasets}

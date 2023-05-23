@@ -23,6 +23,6 @@ The data set is a transformed version of knee for fitting a cumulative logit mod
 }
 \examples{
 ##example of analysis:
-vignette("random-knee2")
+if(interactive()){vignette("random-knee2")}
 }
 \keyword{datasets}
